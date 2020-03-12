@@ -1,7 +1,7 @@
 var assert = require('assert');
 var expect = require('chai').expect
 var Web3 = require('web3')
-const contants = require('./utils/constants')
+const contants = require('./constant')
 
 
 const OPTIONS = {
@@ -25,7 +25,7 @@ const secondPrivateKey = '0x79D9FF31D885D96B887CAF34C0D1282EA3666F731D78A57EFADA
 
 const secondPublicKey = '0x31Edebea67E8b6F398F3CA23CC0E6dA491798fbc'
 
-let portalAddress = '0x5ABFC42A4a2081BBeBB3cF72D0740Eb94dA8E4E7'
+let portalAddress = '0x05f33314248836E1137A342f9E6821BaAb7EE60E'
 let xioAddress = '0x5d3069CBb2BFb7ebB9566728E44EaFDaC3E52708'
 let omgAddress = '0x879884c3C46A24f56089f3bBbe4d5e38dB5788C0'
 let xioExchangeAddress = '0xf9f62d768DaD7ccc2E60a115FFDAC88b9B8c70cc'
@@ -288,7 +288,10 @@ describe('Portal Test', function () {
     describe('Get XIO To ETH', function () {
         it('Should Return ETH Price', async function () {
             contract = new web3.eth.Contract(contants.ABI_PORTAL, portalAddress);
-            let tokenAmount = await web3.utils.toWei((1*0.0006849315*10).toString())
+            // let tokenAmount = await web3.utils.toWei((100*0.0006849315*15).toString())
+            let tokenAmount = await web3.utils.toWei((100*0.000684931506849315*1).toString())
+            // let tokenAmount = await web3.utils.toWei((0.000684931506849315).toString())
+            
             console.log(tokenAmount)
             let tx = await contract.methods.getXIOtoETH(tokenAmount).call()
             console.log(tx)
@@ -312,6 +315,7 @@ describe('Portal Test', function () {
             let eth = await web3.utils.toWei(ethSoldAmount)
             let tx = await contract.methods.getETHtoALT(eth, omgExchangeAddress).call()
             altBuyAmount = tx
+            // altBuyAmount = await web3.utils.fromWei(tx)
             console.log(altBuyAmount)
             if (tx) {
                 expect(true).to.equal(true)
@@ -335,6 +339,8 @@ describe('Portal Test', function () {
             // console.log(soldDayQuantity/onDayQuantity)
             let quantity = await web3.utils.toWei('10')
             // let tokenBought =
+            // altBuyAmount = await web3.utils.toWei((altBuyAmount*100*15).toString())
+            console.log(altBuyAmount, xioQuantity)
             //     await web3.utils.toWei('0.000009553545941302')
             let txObject = {
                 from: ownerPublicKey,
@@ -343,7 +349,7 @@ describe('Portal Test', function () {
                 gasLimit: 1000000,
                 chainId: 4,
                 nonce: web3.utils.toHex(count),
-                data: contract.methods.stakeXIO(omgAddress,10, xioQuantity,  altBuyAmount, 0, "OMG").encodeABI()
+                data: contract.methods.stakeXIO(omgAddress,1, xioQuantity,  altBuyAmount, 0, "OMG").encodeABI()
             }
 
             // console.log('1000000000000000000',quantity, altBuyAmount,  2 * 60 * 1000, 1, "ZRX", omgAddress)

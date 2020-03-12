@@ -69,6 +69,9 @@ contract Portal{
     address xioContractAddress = 0x5d3069CBb2BFb7ebB9566728E44EaFDaC3E52708;
     uint256 portalId = 0;
     bool paused = false;
+    
+    //for testing
+    uint constant ONE_MINUTE = 60;
 
 
     mapping (address=>StakerData[]) public stakerData;
@@ -137,7 +140,9 @@ contract Portal{
         require(portalData[_portalId].tokenAddress != address(0), "Portal does not exists"); // To verify portal info
         require(whiteListed[msg.sender] == true, "Not whitelist address");
         
-        stakerData[msg.sender].push(StakerData(_portalId, msg.sender, _xioQuantity, _days*ONE_DAY, block.timestamp, _symbol));
+        // stakerData[msg.sender].push(StakerData(_portalId, msg.sender, _xioQuantity, _days*ONE_DAY, block.timestamp, _symbol));
+        
+        stakerData[msg.sender].push(StakerData(_portalId, msg.sender, _xioQuantity, _days*ONE_MINUTE, block.timestamp, _symbol));
         
         emit DataEntered(msg.sender,_portalId,_xioQuantity);
         
@@ -164,17 +169,22 @@ contract Portal{
     *  @param _amount , xio token quanity user has staked (in wei)
     */
     
+    
+    
     function withdrawXIO(uint256 _amount) public isNotPaused {
         require(_amount>0, "AMOUNT SHOULD BE GREATER THAN 0");
         bool done = false;
         StakerData[] storage stakerArray= stakerData[msg.sender];
-        for(uint8 i=0; i<stakerArray.length;i++){
-            if((stakerArray[i].stakeInitiationTimestamp + stakerArray[i].stakeDurationTimestamp <= block.timestamp) && (stakerArray[i].stakeQuantity - _amount  >= 0) && (stakerArray[0].publicKey != address(0))){
+        for(uint256 i=0; i<stakerArray.length;i++){
+            if((stakerArray[i].stakeInitiationTimestamp + stakerArray[i].stakeDurationTimestamp <= block.timestamp) && (stakerArray[i].stakeQuantity - _amount  >= 0) && (stakerArray[i].publicKey != address(0))){
                 Token(xioContractAddress).transfer(msg.sender,_amount);
                 emit Transfer(msg.sender,_amount);
                 stakerArray[i].stakeQuantity = stakerArray[i].stakeQuantity -  _amount;
+                portalData[stakerArray[i].portalId].xioStaked = portalData[stakerArray[i].portalId].xioStaked - _amount;
                 totalXio = totalXio - _amount;
-                if(stakerArray[i].stakeQuantity == 0) delete stakerArray[i];
+                if(stakerArray[i].stakeQuantity==0){
+                    stakerArray[i].publicKey = 0x0000000000000000000000000000000000000000;
+                }
                 done=true;
                 break;
             }
@@ -184,6 +194,7 @@ contract Portal{
         }
         
     }
+    
     
     /* @dev to add portal into the contract
     *  @param _tokenAddress, address of output token
@@ -244,8 +255,8 @@ contract Portal{
         bool done = false;
         StakerData[] storage stakerArray= stakerData[_staker];
       
-        for(uint8 i=0; i<stakerArray.length;i++){
-            if((stakerArray[i].stakeInitiationTimestamp + stakerArray[i].stakeDurationTimestamp <= block.timestamp) && (stakerArray[i].stakeQuantity -  _amount >= 0) && (stakerArray[0].publicKey != address(0))){
+        for(uint256 i=0; i<stakerArray.length;i++){
+            if((stakerArray[i].stakeInitiationTimestamp + stakerArray[i].stakeDurationTimestamp <= block.timestamp) && (stakerArray[i].stakeQuantity -  _amount >= 0) && (stakerArray[i].publicKey != address(0))){
                 done=true;
                 break;
             }
