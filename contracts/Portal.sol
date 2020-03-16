@@ -58,8 +58,7 @@ interface Token {
     event Approval(address indexed owner, address indexed spender, uint256 value);
 }
 
-
-contract Portal{
+contract Portal {
     uint256 public totalXio;
     uint256 interestRate = 684931506849315;
     address owner;
@@ -73,7 +72,6 @@ contract Portal{
     //for testing
     uint constant ONE_MINUTE = 60;
 
-
     mapping (address=>StakerData[]) public stakerData;
     mapping (uint256=>PortalData) public portalData;
     mapping (address=>bool) internal whiteListed;
@@ -86,7 +84,6 @@ contract Portal{
         uint256 stakeInitiationTimestamp;
         string outputTokenSymbol;
     }
-
 
     struct PortalData{
         uint256 portalId;
@@ -106,8 +103,8 @@ contract Portal{
         _;
     }
     
-    event DataEntered(address staker, uint256  portalId, uint256 quanitity); // When data is entered into the mapping
-    event Tranferred(address staker, uint256  portalId, uint256 quanitity, string symbol); // When bought tokens are transferred to staker
+    event DataEntered(address staker, uint256  portalId, uint256 quantity); // When data is entered into the mapping
+    event Tranferred(address staker, uint256  portalId, uint256 quantity, string symbol); // When bought tokens are transferred to staker
     event Bought(address staker, uint256  portalId, uint256 _tokensBought, string symbol); // When tokens are bought
     event Transfer(address to, uint256 value); // When tokens are withdrawn
     event NotTransfer(address to, uint256 value); // When tokens are not withdrawn
@@ -116,9 +113,89 @@ contract Portal{
     *  @param _xioToken , xio token address
     *  @param _xioExchange, xio exchange address on Uniswap
     */
-    
     constructor() public {
         owner = msg.sender;
+    }
+
+    /* @dev to get total xio staked into the portal */
+    function getTotalXIOStaked() public view returns (uint256) {
+        return totalXio;
+    }
+
+    /* @dev to check if user can wtihdraw their staked xio or not
+    *  @param _amount , xio token quanity user has staked (in wei)
+    *  @param _staker , public address of staker
+    */
+    function canWithdrawXIO(uint256 _amount, address _staker) public view returns (bool) {
+        bool done = false;
+        StakerData[] storage stakerArray= stakerData[_staker];
+      
+        for(uint256 i=0; i<stakerArray.length;i++){
+            if((stakerArray[i].stakeInitiationTimestamp + stakerArray[i].stakeDurationTimestamp <= block.timestamp) && (stakerArray[i].stakeQuantity -  _amount >= 0) && (stakerArray[i].publicKey != address(0))){
+                done=true;
+                break;
+            }
+        }
+        if(!done){
+            return false;
+        }
+        return true;
+        
+    }
+
+    /* @dev to get interest rate of the portal */
+    function getInterestRate() public view returns(uint256){
+        return interestRate;
+    }
+
+    /* @dev to get exchange rate of XIO to ETH
+    *  @param _amount, xio amount
+    */
+    function getXIOtoETH(uint256 _amount) public view returns (uint256){
+        return UniswapExchangeInterface(xioExchangeAddress).getTokenToEthInputPrice(_amount);
+    }
+
+    /* @dev to get exchange rate of ETH to ALT
+    *  @param _amount, xio amount
+    *  @param _outputTokenAddressExchange, exchange address of output token on uniswap
+    */
+    function getETHtoALT(uint256 _amount, address _outputTokenAddressExchange) public view returns (uint256){
+        return UniswapExchangeInterface(_outputTokenAddressExchange).getEthToTokenInputPrice(_amount);
+    }
+
+    /* @dev to get array's lenght of staker data // for front end feasiblity
+    *  @param _address, address of staker
+    */
+    function getArrayLengthOfStakerData(address _address) public view returns(uint256){
+        return stakerData[_address].length;
+    }
+
+    /* @dev to check portal if it already exists or not
+    *  @param _tokenAddress, address of output token
+    */
+    function checkPortalExists(address _tokenAddress) internal view returns (bool){
+        bool exists;
+        for(uint128 i=0; ;i++){
+            if(portalData[i].tokenAddress == address(0)){
+                exists = false;
+                break;
+            } else if(portalData[i].tokenAddress == _tokenAddress){
+                exists = true;
+                break;
+            }
+        }
+        return exists;
+    }
+
+    /* @dev to check if given address is contract's or not
+    *  @param _addr, public address
+    */ 
+    function isContract(address _addr) internal view returns (bool){
+        uint32 size;
+        assembly {
+            size := extcodesize(_addr)
+        }
+        return (size > 0);
     }
     
     /* @dev stake function which calls uniswaps exchange to buy output tokens and send them to the user.
@@ -130,13 +207,12 @@ contract Portal{
     *  @param _outputTokenAddress, bought token ERC20 address
     *  @param _days, how much days he has staked (in days)
     */
-    
-    function stakeXIO( address _outputTokenAddress, uint256 _days, uint256 _xioQuantity, uint256 _tokensBought, uint256 _portalId, string memory _symbol) public isNotPaused returns (bool){
+    function stakeXIO( address _outputTokenAddress, uint256 _days, uint256 _xioQuantity, uint256 _tokensBought, uint256 _portalId, string memory _symbol) public isNotPaused returns (bool) {
         
         require(_days>0, "Invalid Days");  // To check days
-        require(_xioQuantity >0 , "Invalid XIO quanity"); // To verify XIO quantity
+        require(_xioQuantity > 0 , "Invalid XIO quantity"); // To verify XIO quantity
         require(_outputTokenAddress != address(0),"0 address not allowed"); // To verify output token address
-        require(isContract(_outputTokenAddress) != false, "not a contract address"); // To verify address is contract or not
+        require(isContract(_outputTokenAddress) != false, "Not a contract address"); // To verify address is contract or not
         require(portalData[_portalId].tokenAddress != address(0), "Portal does not exists"); // To verify portal info
         require(whiteListed[msg.sender] == true, "Not whitelist address");
         
@@ -156,7 +232,7 @@ contract Portal{
         
         uint256 bought = UniswapExchangeInterface(xioExchangeAddress).tokenToTokenSwapInput(soldXIO,_tokensBought,1,1839591241,_outputTokenAddress);
         
-        if(bought>0){
+        if(bought > 0){
             emit Bought(msg.sender,_portalId,_tokensBought,_symbol);
             Token(_outputTokenAddress).transfer(msg.sender,_tokensBought);
             emit Tranferred(msg.sender,_portalId,_tokensBought,_symbol);
@@ -168,11 +244,8 @@ contract Portal{
     /* @dev withdrwal function by which user can withdraw their staked xio
     *  @param _amount , xio token quanity user has staked (in wei)
     */
-    
-    
-    
     function withdrawXIO(uint256 _amount) public isNotPaused {
-        require(_amount>0, "AMOUNT SHOULD BE GREATER THAN 0");
+        require(_amount>0, "Amount should be greater than 0");
         bool done = false;
         StakerData[] storage stakerArray= stakerData[msg.sender];
         for(uint256 i=0; i<stakerArray.length;i++){
@@ -201,159 +274,54 @@ contract Portal{
     *  @param _tokenExchangeAddress, exhange address of token on uniswap
     *  @param _outputTokenSymbol, symbol of ouput token
     */
-    
-    function addPortal(
-        address _tokenAddress,
-        address _tokenExchangeAddress,
-        string memory _outputTokenSymbol) public onlyOwner isNotPaused returns(bool){
+    function addPortal(address _tokenAddress, address _tokenExchangeAddress, string memory _outputTokenSymbol) public onlyOwner isNotPaused returns(bool) {
             require(_tokenAddress != address(0), "Zero address not allowed");
             require(_tokenExchangeAddress != address(0), "Zero address not allowed");
-            require(checkPortalExist(_tokenAddress) == false , "Portal already exists");
+            require(checkPortalExists(_tokenAddress) == false , "Portal already exists");
             portalData[portalId] = PortalData(portalId, _tokenAddress, _tokenExchangeAddress, _outputTokenSymbol, 0);
             portalId++;
             return true;
     }
     
-    
-    /* @dev to check portal if it already exists or not
-    *  @param _tokenAddress, address of output token
-    */
-    
-    function checkPortalExist(address _tokenAddress) internal view returns (bool){
-        bool exists;
-        for(uint128 i=0; ;i++){
-            if(portalData[i].tokenAddress == address(0)){
-                exists = false;
-                break;
-            }else if(portalData[i].tokenAddress == _tokenAddress){
-                exists = true;
-                break;
-            }
-        }
-        return exists;
-    }
-    
     /* @dev to delete portal into the contract
     *  @param _portalId, portal Id of portal
     */
-    
-    function removePortal(uint256 _portalId) public onlyOwner isNotPaused returns(bool){
+    function removePortal(uint256 _portalId) public onlyOwner isNotPaused returns(bool) {
             require(_portalId >0 , "Invalid Portal id");
             require(portalData[_portalId].tokenAddress != address(0),"Portal does not exist");
             portalData[_portalId] = PortalData(_portalId, 0x0000000000000000000000000000000000000000, 0x0000000000000000000000000000000000000000, "NONE", 0);
             return true;
     }
     
-    
-    /* @dev to check if user can wtihdraw their staked xio or not
-    *  @param _amount , xio token quanity user has staked (in wei)
-    *  @param _staker , public address of staker
-    */
-    
-    
-    function canWithdrawXIO(uint256 _amount, address _staker) public view returns (bool) {
-        bool done = false;
-        StakerData[] storage stakerArray= stakerData[_staker];
-      
-        for(uint256 i=0; i<stakerArray.length;i++){
-            if((stakerArray[i].stakeInitiationTimestamp + stakerArray[i].stakeDurationTimestamp <= block.timestamp) && (stakerArray[i].stakeQuantity -  _amount >= 0) && (stakerArray[i].publicKey != address(0))){
-                done=true;
-                break;
-            }
-        }
-        if(!done){
-            return false;
-        }
-        return true;
-        
-    }
-   
-    /* @dev to check if given address is contract's or not
-    *  @param _addr, public address
-    */
-    
-    function isContract(address _addr) internal view returns (bool){
-        uint32 size;
-        assembly {
-            size := extcodesize(_addr)
-        }
-        return (size > 0);
-    }
-    
-    /* @dev to get total xio staked into the portal */
-    
-    function getTotalXIOStaked() public view returns (uint256){
-        return totalXio;
-    }
-    
     /* @dev to set interest rate. Can only be called by owner 
     *  @param _rate, interest rate (in wei)
     */
-    
-    function setInterestRate(uint256 _rate) public onlyOwner isNotPaused returns(bool){
-        require(_rate!=0,"RATE CAN'T BE ZERO");
+    function setInterestRate(uint256 _rate) public onlyOwner isNotPaused returns(bool) {
+        require(_rate!=0,"Rate connot be zero");
         interestRate = _rate;
     }
     
     /* @dev to pause contract */
-    
     function pauseContract() public onlyOwner {
         paused = true;
     }
     
     /* @dev to pause contract */
-    
     function unPauseContract() public onlyOwner {
         paused = false;
     }
     
-    /* @dev to get interest rate of the portal */
-
-    function getInterestRate() public view returns(uint256){
-        return interestRate;
-    }
-    
     /* @dev to allow XIO exchange max XIO tokens from the portal, can only be called by owner */
-
-    function allowXIO() public onlyOwner returns(bool){
+    function allowXIO() public onlyOwner returns(bool) {
         return Token(xioContractAddress).approve(xioExchangeAddress, MAX_UINT);
     }
-    
-    /* @dev to get exchange rate of XIO to ETH
-    *  @param _amount, xio amount
-    */
-
-    function getXIOtoETH(uint256 _amount) public view returns (uint256){
-        return UniswapExchangeInterface(xioExchangeAddress).getTokenToEthInputPrice(_amount);
-    }
-    
-    /* @dev to get exchange rate of ETH to ALT
-    *  @param _amount, xio amount
-    *  @param _outputTokenAddressExchange, exchange address of output token on uniswap
-    */
-
-    function getETHtoALT(uint256 _amount, address _outputTokenAddressExchange) public view returns (uint256){
-        return UniswapExchangeInterface(_outputTokenAddressExchange).getEthToTokenInputPrice(_amount);
-    }
-    
-    
-    /* @dev to get array's lenght of staker data // for front end feasiblity
-    *  @param _address, address of staker
-    */
-    
-    function getArrayLengthOfStakerData(address _address) public view returns(uint256){
-        return stakerData[_address].length;
-    }
-    
     
     /* @dev to add whitelist addresses // for front end feasiblity
     *  @param __staker, array of staker address
     */
-    
     function addWhiteListAccount(address[] memory _staker) public onlyOwner isNotPaused {
         for(uint8 i=0; i<_staker.length;i++){
             whiteListed[_staker[i]]=true;
         }
     }
-
 }
