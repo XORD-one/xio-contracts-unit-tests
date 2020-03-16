@@ -58,16 +58,140 @@ interface Token {
     event Approval(address indexed owner, address indexed spender, uint256 value);
 }
 
-contract Portal {
+contract Ownable {
+    address private _owner;
+
+    event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
+
+    /**
+     * @dev Initializes the contract setting the deployer as the initial owner.
+     */
+    constructor () internal {
+        _owner = msg.sender;
+        emit OwnershipTransferred(address(0), _owner);
+    }
+
+    /**
+     * @dev Returns the address of the current owner.
+     */
+    function owner() public view returns (address) {
+        return _owner;
+    }
+
+    /**
+     * @dev Throws if called by any account other than the owner.
+     */
+    modifier onlyOwner() {
+        require(isOwner(), "Ownable: caller is not the owner");
+        _;
+    }
+
+    /**
+     * @dev Returns true if the caller is the current owner.
+     */
+    function isOwner() public view returns (bool) {
+        return msg.sender == _owner;
+    }
+
+    /**
+     * @dev Leaves the contract without owner. It will not be possible to call
+     * `onlyOwner` functions anymore. Can only be called by the current owner.
+     *
+     * NOTE: Renouncing ownership will leave the contract without an owner,
+     * thereby removing any functionality that is only available to the owner.
+     */
+    function renounceOwnership() public onlyOwner {
+        emit OwnershipTransferred(_owner, address(0));
+        _owner = address(0);
+    }
+
+    /**
+     * @dev Transfers ownership of the contract to a new account (`newOwner`).
+     * Can only be called by the current owner.
+     */
+    function transferOwnership(address newOwner) public onlyOwner {
+        _transferOwnership(newOwner);
+    }
+
+    /**
+     * @dev Transfers ownership of the contract to a new account (`newOwner`).
+     */
+    function _transferOwnership(address newOwner) internal virtual {
+        require(newOwner != address(0), "Ownable: new owner is the zero address");
+        emit OwnershipTransferred(_owner, newOwner);
+        _owner = newOwner;
+    }
+}
+
+contract Pausable {
+    /**
+     * @dev Emitted when the pause is triggered by a pauser (`account`).
+     */
+    event Paused(address account);
+
+    /**
+     * @dev Emitted when the pause is lifted by a pauser (`account`).
+     */
+    event Unpaused(address account);
+
+    bool private _paused;
+
+    /**
+     * @dev Initializes the contract in unpaused state. Assigns the Pauser role
+     * to the deployer.
+     */
+    constructor () internal {
+        _paused = false;
+    }
+
+    /**
+     * @dev Returns true if the contract is paused, and false otherwise.
+     */
+    function paused() public view returns (bool) {
+        return _paused;
+    }
+
+    /**
+     * @dev Modifier to make a function callable only when the contract is not paused.
+     */
+    modifier whenNotPaused() {
+        require(!_paused, "Pausable: paused");
+        _;
+    }
+
+    /**
+     * @dev Modifier to make a function callable only when the contract is paused.
+     */
+    modifier whenPaused() {
+        require(_paused, "Pausable: not paused");
+        _;
+    }
+
+    /**
+     * @dev Called by a pauser to pause, triggers stopped state.
+     */
+    function _pause() internal whenNotPaused {
+        _paused = true;
+        emit Paused(msg.sender);
+    }
+
+    /**
+     * @dev Called by a pauser to unpause, returns to normal state.
+     */
+    function _unpause() internal whenPaused {
+        _paused = false;
+        emit Unpaused(msg.sender);
+    }
+}
+
+contract Portal is Ownable, Pausable {
     uint256 public totalXio;
     uint256 interestRate = 684931506849315;
-    address owner;
     uint constant MAX_UINT = 2**256 - 1; 
     uint constant ONE_DAY = 24*60*60;
     address xioExchangeAddress = 0xf9f62d768DaD7ccc2E60a115FFDAC88b9B8c70cc;
     address xioContractAddress = 0x5d3069CBb2BFb7ebB9566728E44EaFDaC3E52708;
     uint256 portalId = 0;
-    bool paused = false;
     
     //for testing
     uint constant ONE_MINUTE = 60;
@@ -76,7 +200,7 @@ contract Portal {
     mapping (uint256=>PortalData) public portalData;
     mapping (address=>bool) internal whiteListed;
 
-    struct StakerData{
+    struct StakerData {
         uint256 portalId;
         address publicKey;
         uint256 stakeQuantity;
@@ -85,22 +209,12 @@ contract Portal {
         string outputTokenSymbol;
     }
 
-    struct PortalData{
+    struct PortalData {
         uint256 portalId;
         address tokenAddress;
         address tokenExchangeAddress;
         string outputTokenSymbol;
         uint256 xioStaked;
-    }
-
-    modifier onlyOwner() {
-        require(msg.sender == owner);
-        _;
-    }
-    
-    modifier isNotPaused(){
-        require(paused == false);
-        _;
     }
     
     event DataEntered(address staker, uint256  portalId, uint256 quantity); // When data is entered into the mapping
@@ -108,17 +222,9 @@ contract Portal {
     event Bought(address staker, uint256  portalId, uint256 _tokensBought, string symbol); // When tokens are bought
     event Transfer(address to, uint256 value); // When tokens are withdrawn
     event NotTransfer(address to, uint256 value); // When tokens are not withdrawn
-    
-    /* @dev to initialize xio token and exchange address
-    *  @param _xioToken , xio token address
-    *  @param _xioExchange, xio exchange address on Uniswap
-    */
-    constructor() public {
-        owner = msg.sender;
-    }
 
     /* @dev to get total xio staked into the portal */
-    function getTotalXIOStaked() public view returns (uint256) {
+    function getTotalXIOStaked() external view returns (uint256) {
         return totalXio;
     }
 
@@ -126,7 +232,7 @@ contract Portal {
     *  @param _amount , xio token quanity user has staked (in wei)
     *  @param _staker , public address of staker
     */
-    function canWithdrawXIO(uint256 _amount, address _staker) public view returns (bool) {
+    function canWithdrawXIO(uint256 _amount, address _staker) external view returns (bool) {
         bool done = false;
         StakerData[] storage stakerArray= stakerData[_staker];
       
@@ -144,14 +250,14 @@ contract Portal {
     }
 
     /* @dev to get interest rate of the portal */
-    function getInterestRate() public view returns(uint256){
+    function getInterestRate() external view returns(uint256){
         return interestRate;
     }
 
     /* @dev to get exchange rate of XIO to ETH
     *  @param _amount, xio amount
     */
-    function getXIOtoETH(uint256 _amount) public view returns (uint256){
+    function getXIOtoETH(uint256 _amount) external view returns (uint256){
         return UniswapExchangeInterface(xioExchangeAddress).getTokenToEthInputPrice(_amount);
     }
 
@@ -159,14 +265,14 @@ contract Portal {
     *  @param _amount, xio amount
     *  @param _outputTokenAddressExchange, exchange address of output token on uniswap
     */
-    function getETHtoALT(uint256 _amount, address _outputTokenAddressExchange) public view returns (uint256){
+    function getETHtoALT(uint256 _amount, address _outputTokenAddressExchange) external view returns (uint256){
         return UniswapExchangeInterface(_outputTokenAddressExchange).getEthToTokenInputPrice(_amount);
     }
 
     /* @dev to get array's lenght of staker data // for front end feasiblity
     *  @param _address, address of staker
     */
-    function getArrayLengthOfStakerData(address _address) public view returns(uint256){
+    function getArrayLengthOfStakerData(address _address) external view returns(uint256){
         return stakerData[_address].length;
     }
 
@@ -207,7 +313,7 @@ contract Portal {
     *  @param _outputTokenAddress, bought token ERC20 address
     *  @param _days, how much days he has staked (in days)
     */
-    function stakeXIO( address _outputTokenAddress, uint256 _days, uint256 _xioQuantity, uint256 _tokensBought, uint256 _portalId, string memory _symbol) public isNotPaused returns (bool) {
+    function stakeXIO( address _outputTokenAddress, uint256 _days, uint256 _xioQuantity, uint256 _tokensBought, uint256 _portalId, string memory _symbol) external whenNotPaused returns (bool) {
         
         require(_days>0, "Invalid Days");  // To check days
         require(_xioQuantity > 0 , "Invalid XIO quantity"); // To verify XIO quantity
@@ -244,7 +350,7 @@ contract Portal {
     /* @dev withdrwal function by which user can withdraw their staked xio
     *  @param _amount , xio token quanity user has staked (in wei)
     */
-    function withdrawXIO(uint256 _amount) public isNotPaused {
+    function withdrawXIO(uint256 _amount) external whenNotPaused {
         require(_amount>0, "Amount should be greater than 0");
         bool done = false;
         StakerData[] storage stakerArray= stakerData[msg.sender];
@@ -268,13 +374,12 @@ contract Portal {
         
     }
     
-    
     /* @dev to add portal into the contract
     *  @param _tokenAddress, address of output token
     *  @param _tokenExchangeAddress, exhange address of token on uniswap
     *  @param _outputTokenSymbol, symbol of ouput token
     */
-    function addPortal(address _tokenAddress, address _tokenExchangeAddress, string memory _outputTokenSymbol) public onlyOwner isNotPaused returns(bool) {
+    function addPortal(address _tokenAddress, address _tokenExchangeAddress, string memory _outputTokenSymbol) external onlyOwner whenNotPaused returns(bool) {
             require(_tokenAddress != address(0), "Zero address not allowed");
             require(_tokenExchangeAddress != address(0), "Zero address not allowed");
             require(checkPortalExists(_tokenAddress) == false , "Portal already exists");
@@ -286,7 +391,7 @@ contract Portal {
     /* @dev to delete portal into the contract
     *  @param _portalId, portal Id of portal
     */
-    function removePortal(uint256 _portalId) public onlyOwner isNotPaused returns(bool) {
+    function removePortal(uint256 _portalId) external onlyOwner whenNotPaused returns(bool) {
             require(_portalId >0 , "Invalid Portal id");
             require(portalData[_portalId].tokenAddress != address(0),"Portal does not exist");
             portalData[_portalId] = PortalData(_portalId, 0x0000000000000000000000000000000000000000, 0x0000000000000000000000000000000000000000, "NONE", 0);
@@ -296,32 +401,26 @@ contract Portal {
     /* @dev to set interest rate. Can only be called by owner 
     *  @param _rate, interest rate (in wei)
     */
-    function setInterestRate(uint256 _rate) public onlyOwner isNotPaused returns(bool) {
-        require(_rate!=0,"Rate connot be zero");
+    function setInterestRate(uint256 _rate) external onlyOwner whenNotPaused returns(bool) {
+        require(_rate != 0, "Rate connot be zero");
         interestRate = _rate;
     }
     
-    /* @dev to pause contract */
-    function pauseContract() public onlyOwner {
-        paused = true;
-    }
-    
-    /* @dev to pause contract */
-    function unPauseContract() public onlyOwner {
-        paused = false;
-    }
-    
     /* @dev to allow XIO exchange max XIO tokens from the portal, can only be called by owner */
-    function allowXIO() public onlyOwner returns(bool) {
+    function allowXIO() external onlyOwner returns(bool) {
         return Token(xioContractAddress).approve(xioExchangeAddress, MAX_UINT);
     }
     
     /* @dev to add whitelist addresses // for front end feasiblity
     *  @param __staker, array of staker address
     */
-    function addWhiteListAccount(address[] memory _staker) public onlyOwner isNotPaused {
+    function addWhiteListAccount(address[] memory _staker) external onlyOwner whenNotPaused {
         for(uint8 i=0; i<_staker.length;i++){
             whiteListed[_staker[i]]=true;
         }
+    }
+
+    function setXIOExchangeAddress(address _exchangeAddress) external onlyOwner whenNotPaused {
+        xioExchangeAddress = _exchangeAddress;
     }
 }

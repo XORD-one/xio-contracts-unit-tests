@@ -3,9 +3,7 @@ var expect = require('chai').expect
 var Web3 = require('web3')
 const contants = require('./constant')
 
-
 const OPTIONS = {
-    // defaultBlock: "latest",
     transactionConfirmationBlocks: 1,
     transactionBlockTimeout: 5
 };
@@ -34,263 +32,311 @@ let factoryAddress = '0xf5D915570BC477f9B8D6C0E980aA81757A3AaC36'
 
 /*** basic tests ***/
 describe('Portal Test', function () {
-    // describe('Set Interest Rate', function () {
-    //     it('Should set interest rate because it is set by owner', async function() {
-    //         contract = new web3.eth.Contract(contants.ABI_PORTAL, portalAddress);
-    //         let count = await web3.eth.getTransactionCount(publicKey, "pending")
-    //
-    //
-    //         let txObject = {
-    //             from: publicKey,
-    //             to: portalAddress,
-    //             gasPrice: 25 * 1000000000,
-    //             gasLimit: 1000000,
-    //             chainId: 4,
-    //             nonce: web3.utils.toHex(count),
-    //             data: contract.methods.setInterestRate(684931506849315).encodeABI()
-    //         }
-    //
-    //         let signed = await web3.eth.accounts.signTransaction(txObject, privateKey)
-    //
-    //         let tx = await web3.eth.sendSignedTransaction(signed.rawTransaction)
-    //
-    //         expect(tx.status).to.equal(true)
-    //     });
-    //
-    //     it('Should not set interest rate because it is not set by owner', async function() {
-    //         contract = new web3.eth.Contract(contants.ABI_PORTAL, portalAddress);
-    //         let count = await web3.eth.getTransactionCount(publicKey, "pending")
-    //
-    //
-    //         let txObject = {
-    //             from: publicKey,
-    //             to: portalAddress,
-    //             gasPrice: 25 * 1000000000,
-    //             gasLimit: 1000000,
-    //             chainId: 4,
-    //             nonce: web3.utils.toHex(count),
-    //             data: contract.methods.setInterestRate(684931506849315).encodeABI()
-    //         }
-    //
-    //         let signed = await web3.eth.accounts.signTransaction(txObject, privateKey)
-    //         try{
-    //             let tx = await web3.eth.sendSignedTransaction(signed.rawTransaction)
-    //         }catch (e) {
-    //             expect(false).to.equal(false)
-    //         }
-    //     });
-    //
-    //     it('Should not set interest rate because it is 0', async function() {
-    //         contract = new web3.eth.Contract(contants.ABI_PORTAL, portalAddress);
-    //         let count = await web3.eth.getTransactionCount(publicKey, "pending")
-    //
-    //
-    //         let txObject = {
-    //             from: publicKey,
-    //             to: portalAddress,
-    //             gasPrice: 25 * 1000000000,
-    //             gasLimit: 1000000,
-    //             chainId: 4,
-    //             nonce: web3.utils.toHex(count),
-    //             data: contract.methods.setInterestRate(0).encodeABI()
-    //         }
-    //
-    //         let signed = await web3.eth.accounts.signTransaction(txObject, privateKey)
-    //         try{
-    //             let tx = await web3.eth.sendSignedTransaction(signed.rawTransaction)
-    //         }catch (e) {
-    //             expect(false).to.equal(false)
-    //         }
-    //     });
-    //
-    //
-    //     it('Should not set interest rate because it is 0', async function() {
-    //         contract = new web3.eth.Contract(contants.ABI_PORTAL, portalAddress);
-    //         let count = await web3.eth.getTransactionCount(publicKey, "pending")
-    //
-    //
-    //         let txObject = {
-    //             from: publicKey,
-    //             to: portalAddress,
-    //             gasPrice:25 * 1000000000,
-    //             gasLimit: 1000000,
-    //             chainId: 4,
-    //             nonce: web3.utils.toHex(count),
-    //             data: contract.methods.setInterestRate(0).encodeABI()
-    //         }
-    //
-    //         let signed = await web3.eth.accounts.signTransaction(txObject, privateKey)
-    //         try{
-    //             let tx = await web3.eth.sendSignedTransaction(signed.rawTransaction)
-    //         }catch (e) {
-    //             expect(false).to.equal(false)
-    //         }
-    //     });
-    // });
-    // describe('Add Portal', function () {
-    //     it('Should Add Portal', async function () {
-    //         contract = new web3.eth.Contract(contants.ABI_PORTAL, portalAddress);
-    //         let count = await web3.eth.getTransactionCount(ownerPublicKey, "pending")
-    //         let txObject = {
-    //             from: ownerPublicKey,
-    //             to: portalAddress,
-    //             gasPrice: 25 * 1000000000,
-    //             gasLimit: 1000000,
-    //             chainId: 4,
-    //             nonce: web3.utils.toHex(count),
-    //             data: contract.methods.addPortal(omgAddress, omgExchangeAddress, "OMG").encodeABI()
-    //         }
-    //
-    //         // console.log('1000000000000000000',quantity, altBuyAmount,  2 * 60 * 1000, 1, "ZRX", omgAddress)
-    //
-    //         let signed = await web3.eth.accounts.signTransaction(txObject, ownerPrivateKey)
-    //
-    //         let tx = await web3.eth.sendSignedTransaction(signed.rawTransaction)
-    //             .on('error', (err) => {
-    //                 console.log(err)
-    //             }).on('transactionHash', (hash) => {
-    //                 console.log(hash)
-    //             }).on('confirmation', (confirmationNumber, receipt) => {
-    //                 if (confirmationNumber === 1) {
-    //                     console.log(receipt)
-    //                 }
-    //             })
-    //         expect(tx.status).to.equal(true)
-    //     });
-    //
-    //     it('Should Not Add Portal because exchange address is zero address', async function () {
-    //         contract = new web3.eth.Contract(contants.ABI_PORTAL, portalAddress);
-    //         let count = await web3.eth.getTransactionCount(ownerPublicKey, "pending")
-    //         let txObject = {
-    //             from: ownerPublicKey,
-    //             to: portalAddress,
-    //             gasPrice: 25 * 1000000000,
-    //             gasLimit: 1000000,
-    //             chainId: 4,
-    //             nonce: web3.utils.toHex(count),
-    //             data: contract.methods.addPortal(omgAddress, '0x0000000000000000000000000000000000000000', "OMG").encodeABI()
-    //         }
-    //
-    //         // console.log('1000000000000000000',quantity, altBuyAmount,  2 * 60 * 1000, 1, "ZRX", omgAddress)
-    //
-    //         let signed = await web3.eth.accounts.signTransaction(txObject, ownerPrivateKey)
-    //
-    //         let tx = await web3.eth.sendSignedTransaction(signed.rawTransaction)
-    //             .on('error', (err) => {
-    //                 console.log(err)
-    //             }).on('transactionHash', (hash) => {
-    //                 console.log(hash)
-    //             }).on('confirmation', (confirmationNumber, receipt) => {
-    //                 if (confirmationNumber === 1) {
-    //                     console.log(receipt)
-    //                 }
-    //             })
-    //         expect(tx.status).to.equal(true)
-    //     });
-    //
-    //     it('Should Not Add Portal because  address is zero address', async function () {
-    //         contract = new web3.eth.Contract(contants.ABI_PORTAL, portalAddress);
-    //         let count = await web3.eth.getTransactionCount(ownerPublicKey, "pending")
-    //         let txObject = {
-    //             from: ownerPublicKey,
-    //             to: portalAddress,
-    //             gasPrice: 25 * 1000000000,
-    //             gasLimit: 1000000,
-    //             chainId: 4,
-    //             nonce: web3.utils.toHex(count),
-    //             data: contract.methods.addPortal('0x0000000000000000000000000000000000000000', omgExchangeAddress, "OMG").encodeABI()
-    //         }
-    //
-    //         // console.log('1000000000000000000',quantity, altBuyAmount,  2 * 60 * 1000, 1, "ZRX", omgAddress)
-    //
-    //         let signed = await web3.eth.accounts.signTransaction(txObject, ownerPrivateKey)
-    //
-    //         let tx = await web3.eth.sendSignedTransaction(signed.rawTransaction)
-    //             .on('error', (err) => {
-    //                 console.log(err)
-    //             }).on('transactionHash', (hash) => {
-    //                 console.log(hash)
-    //             }).on('confirmation', (confirmationNumber, receipt) => {
-    //                 if (confirmationNumber === 1) {
-    //                     console.log(receipt)
-    //                 }
-    //             })
-    //         expect(tx.status).to.equal(true)
-    //     });
-    //
-    //     it('Should Not Add Portal because portal already exists', async function () {
-    //         contract = new web3.eth.Contract(contants.ABI_PORTAL, portalAddress);
-    //         let count = await web3.eth.getTransactionCount(ownerPublicKey, "pending")
-    //         let txObject = {
-    //             from: ownerPublicKey,
-    //             to: portalAddress,
-    //             gasPrice: 25 * 1000000000,
-    //             gasLimit: 1000000,
-    //             chainId: 4,
-    //             nonce: web3.utils.toHex(count),
-    //             data: contract.methods.addPortal(omgAddress, omgExchangeAddress, "OMG").encodeABI()
-    //         }
-    //
-    //         // console.log('1000000000000000000',quantity, altBuyAmount,  2 * 60 * 1000, 1, "ZRX", omgAddress)
-    //
-    //         let signed = await web3.eth.accounts.signTransaction(txObject, ownerPrivateKey)
-    //
-    //         let tx = await web3.eth.sendSignedTransaction(signed.rawTransaction)
-    //             .on('error', (err) => {
-    //                 console.log(err)
-    //             }).on('transactionHash', (hash) => {
-    //                 console.log(hash)
-    //             }).on('confirmation', (confirmationNumber, receipt) => {
-    //                 if (confirmationNumber === 1) {
-    //                     console.log(receipt)
-    //                 }
-    //             })
-    //         expect(tx.status).to.equal(true)
-    //     });
-    //
-    // });
-    //
-    // describe('Add whitelisters', function () {
-    //     it('Should Add Whitelisted address', async function () {
-    //         contract = new web3.eth.Contract(contants.ABI_PORTAL, portalAddress);
-    //         let count = await web3.eth.getTransactionCount(ownerPublicKey, "pending")
-    //         let whitelisted = ["0xe7Ef8E1402055EB4E89a57d1109EfF3bAA334F5F" ,  "0x31Edebea67E8b6F398F3CA23CC0E6dA491798fbc", "0xe362f0e3561e02b8ecfc5e2defc65e007ff87d72"]
-    //         let txObject = {
-    //             from: ownerPublicKey,
-    //             to: portalAddress,
-    //             gasPrice: 25 * 1000000000,
-    //             gasLimit: 1000000,
-    //             chainId: 4,
-    //             nonce: web3.utils.toHex(count),
-    //             data: contract.methods.addWhiteListAccount(whitelisted).encodeABI()
-    //         }
-    //
-    //         // console.log('1000000000000000000',quantity, altBuyAmount,  2 * 60 * 1000, 1, "ZRX", omgAddress)
-    //
-    //         let signed = await web3.eth.accounts.signTransaction(txObject, ownerPrivateKey)
-    //
-    //         let tx = await web3.eth.sendSignedTransaction(signed.rawTransaction)
-    //             .on('error', (err) => {
-    //                 console.log(err)
-    //             }).on('transactionHash', (hash) => {
-    //                 console.log(hash)
-    //             }).on('confirmation', (confirmationNumber, receipt) => {
-    //                 if (confirmationNumber === 1) {
-    //                     console.log(receipt)
-    //                 }
-    //             })
-    //         expect(tx.status).to.equal(true)
-    //     });
-    //
-    // });
+    describe('Only Owner functions', async function() {
+        describe('Set Interest Rate', async function() {
+            describe('When executed by owner', async function() {
+                describe('When the contract is not paused', async function() {
+                    it('Should set interest rate', async function() {
+                        contract = new web3.eth.Contract(contants.ABI_PORTAL, portalAddress);
+                        let count = await web3.eth.getTransactionCount(publicKey, "pending")
+                
+                        let txObject = {
+                            from: publicKey,
+                            to: portalAddress,
+                            gasPrice: 25 * 1000000000,
+                            gasLimit: 1000000,
+                            chainId: 4,
+                            nonce: web3.utils.toHex(count),
+                            data: contract.methods.setInterestRate(684931506849315).encodeABI()
+                        }
+                
+                        let signed = await web3.eth.accounts.signTransaction(txObject, privateKey)
+                
+                        let tx = await web3.eth.sendSignedTransaction(signed.rawTransaction)
+                
+                        expect(tx.status).to.equal(true)
+                    });
+        
+                    it('Should not set 0 value', async function() {
+                        contract = new web3.eth.Contract(contants.ABI_PORTAL, portalAddress);
+                        let count = await web3.eth.getTransactionCount(publicKey, "pending")
+                
+                        let txObject = {
+                            from: publicKey,
+                            to: portalAddress,
+                            gasPrice: 25 * 1000000000,
+                            gasLimit: 1000000,
+                            chainId: 4,
+                            nonce: web3.utils.toHex(count),
+                            data: contract.methods.setInterestRate(0).encodeABI()
+                        }
+                
+                        let signed = await web3.eth.accounts.signTransaction(txObject, privateKey)
+                        try{
+                            let tx = await web3.eth.sendSignedTransaction(signed.rawTransaction)
+                        }catch (e) {
+                            expect(false).to.equal(false)
+                        }
+                    });
+                })
+                describe('When the contract is paused', async function() {
+                    it('Should revert', async function() {
+                        contract = new web3.eth.Contract(contants.ABI_PORTAL, portalAddress);
+                        let count = await web3.eth.getTransactionCount(publicKey, "pending")
+                
+                        let txObject = {
+                            from: publicKey,
+                            to: portalAddress,
+                            gasPrice: 25 * 1000000000,
+                            gasLimit: 1000000,
+                            chainId: 4,
+                            nonce: web3.utils.toHex(count),
+                            data: contract.methods.setInterestRate(684931506849315).encodeABI()
+                        }
+                
+                        let signed = await web3.eth.accounts.signTransaction(txObject, privateKey)
+                
+                        let tx = await web3.eth.sendSignedTransaction(signed.rawTransaction)
+                
+                        expect(tx.status).to.equal(true)
+                    });
+                })
+    
+                describe('Should execute when the contract is unpaused', async function() {
+                    //TODO
+                })
+            })
+    
+            describe('When executed by non-owner', async function() {
+                describe('When the contract is not paused', async function() {
+                    it('Should revert', async function() {
+                        contract = new web3.eth.Contract(contants.ABI_PORTAL, portalAddress);
+                        let count = await web3.eth.getTransactionCount(publicKey, "pending")
+                
+                        let txObject = {
+                            from: publicKey,
+                            to: portalAddress,
+                            gasPrice: 25 * 1000000000,
+                            gasLimit: 1000000,
+                            chainId: 4,
+                            nonce: web3.utils.toHex(count),
+                            data: contract.methods.setInterestRate(684931506849315).encodeABI()
+                        }
+                
+                        let signed = await web3.eth.accounts.signTransaction(txObject, privateKey)
+                
+                        let tx = await web3.eth.sendSignedTransaction(signed.rawTransaction)
+                
+                        expect(tx.status).to.equal(true)
+                    });
+        
+                    it('Should revert when setting 0 value', async function() {
+                        contract = new web3.eth.Contract(contants.ABI_PORTAL, portalAddress);
+                        let count = await web3.eth.getTransactionCount(publicKey, "pending")
+                
+                        let txObject = {
+                            from: publicKey,
+                            to: portalAddress,
+                            gasPrice: 25 * 1000000000,
+                            gasLimit: 1000000,
+                            chainId: 4,
+                            nonce: web3.utils.toHex(count),
+                            data: contract.methods.setInterestRate(0).encodeABI()
+                        }
+                
+                        let signed = await web3.eth.accounts.signTransaction(txObject, privateKey)
+                        try{
+                            let tx = await web3.eth.sendSignedTransaction(signed.rawTransaction)
+                        }catch (e) {
+                            expect(false).to.equal(false)
+                        }
+                    });
+                })
+                describe('When the contract is paused', async function() {
+                    it('Should revert', async function() {
+                        contract = new web3.eth.Contract(contants.ABI_PORTAL, portalAddress);
+                        let count = await web3.eth.getTransactionCount(publicKey, "pending")
+                
+                        let txObject = {
+                            from: publicKey,
+                            to: portalAddress,
+                            gasPrice: 25 * 1000000000,
+                            gasLimit: 1000000,
+                            chainId: 4,
+                            nonce: web3.utils.toHex(count),
+                            data: contract.methods.setInterestRate(684931506849315).encodeABI()
+                        }
+                
+                        let signed = await web3.eth.accounts.signTransaction(txObject, privateKey)
+                
+                        let tx = await web3.eth.sendSignedTransaction(signed.rawTransaction)
+                
+                        expect(tx.status).to.equal(true)
+                    });
+                })
+            })
+        });
 
+        describe('Add Portal', function () {
+            it('Should Add Portal', async function () {
+                contract = new web3.eth.Contract(contants.ABI_PORTAL, portalAddress);
+                let count = await web3.eth.getTransactionCount(ownerPublicKey, "pending")
+                let txObject = {
+                    from: ownerPublicKey,
+                    to: portalAddress,
+                    gasPrice: 25 * 1000000000,
+                    gasLimit: 1000000,
+                    chainId: 4,
+                    nonce: web3.utils.toHex(count),
+                    data: contract.methods.addPortal(omgAddress, omgExchangeAddress, "OMG").encodeABI()
+                }
+            
+                let signed = await web3.eth.accounts.signTransaction(txObject, ownerPrivateKey)
+        
+                let tx = await web3.eth.sendSignedTransaction(signed.rawTransaction)
+                    .on('error', (err) => {
+                        console.log(err)
+                    }).on('transactionHash', (hash) => {
+                        console.log(hash)
+                    }).on('confirmation', (confirmationNumber, receipt) => {
+                        if (confirmationNumber === 1) {
+                            console.log(receipt)
+                        }
+                    })
+                expect(tx.status).to.equal(true)
+            });
+        
+            it('Should Not Add Portal because exchange address is zero address', async function () {
+                contract = new web3.eth.Contract(contants.ABI_PORTAL, portalAddress);
+                let count = await web3.eth.getTransactionCount(ownerPublicKey, "pending")
+                let txObject = {
+                    from: ownerPublicKey,
+                    to: portalAddress,
+                    gasPrice: 25 * 1000000000,
+                    gasLimit: 1000000,
+                    chainId: 4,
+                    nonce: web3.utils.toHex(count),
+                    data: contract.methods.addPortal(omgAddress, '0x0000000000000000000000000000000000000000', "OMG").encodeABI()
+                }
+            
+                let signed = await web3.eth.accounts.signTransaction(txObject, ownerPrivateKey)
+        
+                let tx = await web3.eth.sendSignedTransaction(signed.rawTransaction)
+                    .on('error', (err) => {
+                        console.log(err)
+                    }).on('transactionHash', (hash) => {
+                        console.log(hash)
+                    }).on('confirmation', (confirmationNumber, receipt) => {
+                        if (confirmationNumber === 1) {
+                            console.log(receipt)
+                        }
+                    })
+                expect(tx.status).to.equal(true)
+            });
+        
+            it('Should Not Add Portal because  address is zero address', async function () {
+                contract = new web3.eth.Contract(contants.ABI_PORTAL, portalAddress);
+                let count = await web3.eth.getTransactionCount(ownerPublicKey, "pending")
+                let txObject = {
+                    from: ownerPublicKey,
+                    to: portalAddress,
+                    gasPrice: 25 * 1000000000,
+                    gasLimit: 1000000,
+                    chainId: 4,
+                    nonce: web3.utils.toHex(count),
+                    data: contract.methods.addPortal('0x0000000000000000000000000000000000000000', omgExchangeAddress, "OMG").encodeABI()
+                }
+            
+                let signed = await web3.eth.accounts.signTransaction(txObject, ownerPrivateKey)
+        
+                let tx = await web3.eth.sendSignedTransaction(signed.rawTransaction)
+                    .on('error', (err) => {
+                        console.log(err)
+                    }).on('transactionHash', (hash) => {
+                        console.log(hash)
+                    }).on('confirmation', (confirmationNumber, receipt) => {
+                        if (confirmationNumber === 1) {
+                            console.log(receipt)
+                        }
+                    })
+                expect(tx.status).to.equal(true)
+            });
+        
+            it('Should Not Add Portal because portal already exists', async function () {
+                contract = new web3.eth.Contract(contants.ABI_PORTAL, portalAddress);
+                let count = await web3.eth.getTransactionCount(ownerPublicKey, "pending")
+                let txObject = {
+                    from: ownerPublicKey,
+                    to: portalAddress,
+                    gasPrice: 25 * 1000000000,
+                    gasLimit: 1000000,
+                    chainId: 4,
+                    nonce: web3.utils.toHex(count),
+                    data: contract.methods.addPortal(omgAddress, omgExchangeAddress, "OMG").encodeABI()
+                }
+            
+                let signed = await web3.eth.accounts.signTransaction(txObject, ownerPrivateKey)
+        
+                let tx = await web3.eth.sendSignedTransaction(signed.rawTransaction)
+                    .on('error', (err) => {
+                        console.log(err)
+                    }).on('transactionHash', (hash) => {
+                        console.log(hash)
+                    }).on('confirmation', (confirmationNumber, receipt) => {
+                        if (confirmationNumber === 1) {
+                            console.log(receipt)
+                        }
+                    })
+                expect(tx.status).to.equal(true)
+            });
+        });
+        
+        describe('Add whitelisters', function () {
+            it('Should Add Whitelisted address', async function () {
+                contract = new web3.eth.Contract(contants.ABI_PORTAL, portalAddress);
+                let count = await web3.eth.getTransactionCount(ownerPublicKey, "pending")
+                let whitelisted = ["0xe7Ef8E1402055EB4E89a57d1109EfF3bAA334F5F" ,  "0x31Edebea67E8b6F398F3CA23CC0E6dA491798fbc", "0xe362f0e3561e02b8ecfc5e2defc65e007ff87d72"]
+                let txObject = {
+                    from: ownerPublicKey,
+                    to: portalAddress,
+                    gasPrice: 25 * 1000000000,
+                    gasLimit: 1000000,
+                    chainId: 4,
+                    nonce: web3.utils.toHex(count),
+                    data: contract.methods.addWhiteListAccount(whitelisted).encodeABI()
+                }
+            
+                let signed = await web3.eth.accounts.signTransaction(txObject, ownerPrivateKey)
+        
+                let tx = await web3.eth.sendSignedTransaction(signed.rawTransaction)
+                    .on('error', (err) => {
+                        console.log(err)
+                    }).on('transactionHash', (hash) => {
+                        console.log(hash)
+                    }).on('confirmation', (confirmationNumber, receipt) => {
+                        if (confirmationNumber === 1) {
+                            console.log(receipt)
+                        }
+                    })
+                expect(tx.status).to.equal(true)
+            });
+        });
+    })
+
+    describe('Public functions', async function() {
+        
+    })
+
+    describe('Only external functions', async function() {
+        
+    })
+
+    
 
     describe('Get XIO To ETH', function () {
         it('Should Return ETH Price', async function () {
             contract = new web3.eth.Contract(contants.ABI_PORTAL, portalAddress);
-            // let tokenAmount = await web3.utils.toWei((100*0.0006849315*15).toString())
             let tokenAmount = await web3.utils.toWei((100*0.000684931506849315*1).toString())
-            // let tokenAmount = await web3.utils.toWei((0.000684931506849315).toString())
             
             console.log(tokenAmount)
             let tx = await contract.methods.getXIOtoETH(tokenAmount).call()
@@ -304,10 +350,7 @@ describe('Portal Test', function () {
                 expect(false).to.equal(true)
             }
         });
-
-
     });
-    //
 
     describe('Get ETH To OMG', function () {
         it('Should Return OMG to ETH', async function () {
@@ -315,33 +358,24 @@ describe('Portal Test', function () {
             let eth = await web3.utils.toWei(ethSoldAmount)
             let tx = await contract.methods.getETHtoALT(eth, omgExchangeAddress).call()
             altBuyAmount = tx
-            // altBuyAmount = await web3.utils.fromWei(tx)
             console.log(altBuyAmount)
             if (tx) {
                 expect(true).to.equal(true)
             } else {
                 expect(false).to.equal(true)
             }
-            // 14284209926228481
         });
-
     });
-
-
 
     describe('Stake', function () {
         it('Should work perfectly because all params are correct', async function () {
             contract = new web3.eth.Contract(contants.ABI_PORTAL, portalAddress);
             let count = await web3.eth.getTransactionCount(ownerPublicKey, "pending")
 
-            // let onDayQuantity = await web3.utils.toWei((1*0.0006849315).toString())
             let xioQuantity = await web3.utils.toWei((100).toString())
-            // console.log(soldDayQuantity/onDayQuantity)
             let quantity = await web3.utils.toWei('10')
-            // let tokenBought =
-            // altBuyAmount = await web3.utils.toWei((altBuyAmount*100*15).toString())
+
             console.log(altBuyAmount, xioQuantity)
-            //     await web3.utils.toWei('0.000009553545941302')
             let txObject = {
                 from: ownerPublicKey,
                 to: portalAddress,
@@ -351,8 +385,6 @@ describe('Portal Test', function () {
                 nonce: web3.utils.toHex(count),
                 data: contract.methods.stakeXIO(omgAddress,1, xioQuantity,  altBuyAmount, 0, "OMG").encodeABI()
             }
-
-            // console.log('1000000000000000000',quantity, altBuyAmount,  2 * 60 * 1000, 1, "ZRX", omgAddress)
 
             let signed = await web3.eth.accounts.signTransaction(txObject, ownerPrivateKey)
 
@@ -367,243 +399,220 @@ describe('Portal Test', function () {
                     }
                 })
             expect(tx.status).to.equal(true)
-            // 14284209926228481
         });
 
+        it('Should fail because quantity of xio is zero', async function () {
+            contract = new web3.eth.Contract(contants.ABI_PORTAL, portalAddress);
+            let count = await web3.eth.getTransactionCount(publicKey, "pending")
+        
+            let quantity = await web3.utils.toWei((1*0.0006849315).toString())
 
+            let txObject = {
+                from: publicKey,
+                to: portalAddress,
+                gasPrice: 25 * 1000000000,
+                gasLimit: 1000000,
+                chainId: 4,
+                nonce: web3.utils.toHex(count),
+                data: contract.methods.stakeXIO('0',quantity, altBuyAmount,  2 * 60 * 1000, 1, "ZRX", omgAddress).encodeABI()
+            }
+        
+            let signed = await web3.eth.accounts.signTransaction(txObject, privateKey)
+        
+            let tx = await web3.eth.sendSignedTransaction(signed.rawTransaction)
+                .on('error', (err) => {
+                    expect(false).to.equal(false)
+                }).on('transactionHash', (hash) => {
+                    console.log(hash)
+                }).on('confirmation', (confirmationNumber, receipt) => {
+                    if (confirmationNumber === 1) {
+                        console.log(receipt)
+                    }
+                })
+        });
+        
+        it('Should fail because quantity of quantity is zero', async function () {
+            contract = new web3.eth.Contract(contants.ABI_PORTAL, portalAddress);
+            let count = await web3.eth.getTransactionCount(publicKey, "pending")
+        
+            let quantity = await web3.utils.toWei((1*0.0006849315).toString())
 
+            let txObject = {
+                from: publicKey,
+                to: portalAddress,
+                gasPrice: 25 * 1000000000,
+                gasLimit: 1000000,
+                chainId: 4,
+                nonce: web3.utils.toHex(count),
+                data: contract.methods.stakeXIO('1000000000000000000','0', altBuyAmount,  2 * 60 * 1000, 1, "ZRX", omgAddress).encodeABI()
+            }
+        
+            let signed = await web3.eth.accounts.signTransaction(txObject, privateKey)
+        
+            let tx = await web3.eth.sendSignedTransaction(signed.rawTransaction)
+                .on('error', (err) => {
+                    console.log(err)
+                }).on('transactionHash', (hash) => {
+                    console.log(hash)
+                }).on('confirmation', (confirmationNumber, receipt) => {
+                    if (confirmationNumber === 1) {
+                        console.log(receipt)
+                    }
+                })
+            expect(tx.status).to.equal(true)
+        });
+        
+        it('Should fail because quantity of alt amount is zero', async function () {
+            contract = new web3.eth.Contract(contants.ABI_PORTAL, portalAddress);
+            let count = await web3.eth.getTransactionCount(publicKey, "pending")
+        
+            let quantity = await web3.utils.toWei((1*0.0006849315).toString())
 
-        // it('Should fail because quantity of xio is zero', async function () {
-        //     contract = new web3.eth.Contract(contants.ABI_PORTAL, portalAddress);
-        //     let count = await web3.eth.getTransactionCount(publicKey, "pending")
-        //
-        //     let quantity = await web3.utils.toWei((1*0.0006849315).toString())
-        //     // let tokenBought =
-        //     //     await web3.utils.toWei('0.000009553545941302')
-        //     let txObject = {
-        //         from: publicKey,
-        //         to: portalAddress,
-        //         gasPrice: 25 * 1000000000,
-        //         gasLimit: 1000000,
-        //         chainId: 4,
-        //         nonce: web3.utils.toHex(count),
-        //         data: contract.methods.stakeXIO('0',quantity, altBuyAmount,  2 * 60 * 1000, 1, "ZRX", omgAddress).encodeABI()
-        //     }
-        //
-        //     let signed = await web3.eth.accounts.signTransaction(txObject, privateKey)
-        //
-        //     let tx = await web3.eth.sendSignedTransaction(signed.rawTransaction)
-        //         .on('error', (err) => {
-        //             expect(false).to.equal(false)
-        //         }).on('transactionHash', (hash) => {
-        //             console.log(hash)
-        //         }).on('confirmation', (confirmationNumber, receipt) => {
-        //             if (confirmationNumber === 1) {
-        //                 console.log(receipt)
-        //             }
-        //         })
-        // });
-        //
-        // it('Should fail because quantity of quantity is zero', async function () {
-        //     contract = new web3.eth.Contract(contants.ABI_PORTAL, portalAddress);
-        //     let count = await web3.eth.getTransactionCount(publicKey, "pending")
-        //
-        //     let quantity = await web3.utils.toWei((1*0.0006849315).toString())
-        //     // let tokenBought =
-        //     //     await web3.utils.toWei('0.000009553545941302')
-        //     let txObject = {
-        //         from: publicKey,
-        //         to: portalAddress,
-        //         gasPrice: 25 * 1000000000,
-        //         gasLimit: 1000000,
-        //         chainId: 4,
-        //         nonce: web3.utils.toHex(count),
-        //         data: contract.methods.stakeXIO('1000000000000000000','0', altBuyAmount,  2 * 60 * 1000, 1, "ZRX", omgAddress).encodeABI()
-        //     }
-        //
-        //     let signed = await web3.eth.accounts.signTransaction(txObject, privateKey)
-        //
-        //     let tx = await web3.eth.sendSignedTransaction(signed.rawTransaction)
-        //         .on('error', (err) => {
-        //             console.log(err)
-        //         }).on('transactionHash', (hash) => {
-        //             console.log(hash)
-        //         }).on('confirmation', (confirmationNumber, receipt) => {
-        //             if (confirmationNumber === 1) {
-        //                 console.log(receipt)
-        //             }
-        //         })
-        //     expect(tx.status).to.equal(true)
-        //     // 14284209926228481
-        // });
-        //
-        // it('Should fail because quantity of alt amount is zero', async function () {
-        //     contract = new web3.eth.Contract(contants.ABI_PORTAL, portalAddress);
-        //     let count = await web3.eth.getTransactionCount(publicKey, "pending")
-        //
-        //     let quantity = await web3.utils.toWei((1*0.0006849315).toString())
-        //     // let tokenBought =
-        //     //     await web3.utils.toWei('0.000009553545941302')
-        //     let txObject = {
-        //         from: publicKey,
-        //         to: portalAddress,
-        //         gasPrice: 25 * 1000000000,
-        //         gasLimit: 1000000,
-        //         chainId: 4,
-        //         nonce: web3.utils.toHex(count),
-        //         data: contract.methods.stakeXIO('1000000000000000000',quantity, '0',  2 * 60 * 1000, 1, "ZRX", omgAddress).encodeABI()
-        //     }
-        //
-        //     let signed = await web3.eth.accounts.signTransaction(txObject, privateKey)
-        //
-        //     let tx = await web3.eth.sendSignedTransaction(signed.rawTransaction)
-        //         .on('error', (err) => {
-        //             console.log(err)
-        //         }).on('transactionHash', (hash) => {
-        //             console.log(hash)
-        //         }).on('confirmation', (confirmationNumber, receipt) => {
-        //             if (confirmationNumber === 1) {
-        //                 console.log(receipt)
-        //             }
-        //         })
-        //     expect(tx.status).to.equal(true)
-        //     // 14284209926228481
-        // });
-        //
-        // it('Should fail because quantity of altContract is a user address', async function () {
-        //     contract = new web3.eth.Contract(contants.ABI_PORTAL, portalAddress);
-        //     let count = await web3.eth.getTransactionCount(publicKey, "pending")
-        //
-        //     let quantity = await web3.utils.toWei((1*0.0006849315).toString())
-        //     // let tokenBought =
-        //     //     await web3.utils.toWei('0.000009553545941302')
-        //     let txObject = {
-        //         from: publicKey,
-        //         to: portalAddress,
-        //         gasPrice: 25 * 1000000000,
-        //         gasLimit: 1000000,
-        //         chainId: 4,
-        //         nonce: web3.utils.toHex(count),
-        //         data: contract.methods.stakeXIO('1000000000000000000',quantity, '0',  2 * 60 * 1000, 1, "ZRX", '0x0000000000000000000000000000000000000000').encodeABI()
-        //     }
-        //
-        //     let signed = await web3.eth.accounts.signTransaction(txObject, privateKey)
-        //
-        //     let tx = await web3.eth.sendSignedTransaction(signed.rawTransaction)
-        //         .on('error', (err) => {
-        //             console.log(err)
-        //         }).on('transactionHash', (hash) => {
-        //             console.log(hash)
-        //         }).on('confirmation', (confirmationNumber, receipt) => {
-        //             if (confirmationNumber === 1) {
-        //                 console.log(receipt)
-        //             }
-        //         })
-        //     expect(tx.status).to.equal(true)
-        //     // 14284209926228481
-        // });
-        //
-        // it('Should fail because duration is zero', async function () {
-        //     contract = new web3.eth.Contract(contants.ABI_PORTAL, portalAddress);
-        //     let count = await web3.eth.getTransactionCount(publicKey, "pending")
-        //
-        //     let quantity = await web3.utils.toWei((1*0.0006849315).toString())
-        //     // let tokenBought =
-        //     //     await web3.utils.toWei('0.000009553545941302')
-        //     let txObject = {
-        //         from: publicKey,
-        //         to: portalAddress,
-        //         gasPrice: 25 * 1000000000,
-        //         gasLimit: 1000000,
-        //         chainId: 4,
-        //         nonce: web3.utils.toHex(count),
-        //         data: contract.methods.stakeXIO('1000000000000000000',quantity, '0',  0, 1, "ZRX", '0x0000000000000000000000000000000000000000').encodeABI()
-        //     }
-        //
-        //     let signed = await web3.eth.accounts.signTransaction(txObject, privateKey)
-        //
-        //     let tx = await web3.eth.sendSignedTransaction(signed.rawTransaction)
-        //         .on('error', (err) => {
-        //             console.log(err)
-        //         }).on('transactionHash', (hash) => {
-        //             console.log(hash)
-        //         }).on('confirmation', (confirmationNumber, receipt) => {
-        //             if (confirmationNumber === 1) {
-        //                 console.log(receipt)
-        //             }
-        //         })
-        //     expect(tx.status).to.equal(true)
-        //     // 14284209926228481
-        // });
+            let txObject = {
+                from: publicKey,
+                to: portalAddress,
+                gasPrice: 25 * 1000000000,
+                gasLimit: 1000000,
+                chainId: 4,
+                nonce: web3.utils.toHex(count),
+                data: contract.methods.stakeXIO('1000000000000000000',quantity, '0',  2 * 60 * 1000, 1, "ZRX", omgAddress).encodeABI()
+            }
+        
+            let signed = await web3.eth.accounts.signTransaction(txObject, privateKey)
+        
+            let tx = await web3.eth.sendSignedTransaction(signed.rawTransaction)
+                .on('error', (err) => {
+                    console.log(err)
+                }).on('transactionHash', (hash) => {
+                    console.log(hash)
+                }).on('confirmation', (confirmationNumber, receipt) => {
+                    if (confirmationNumber === 1) {
+                        console.log(receipt)
+                    }
+                })
+            expect(tx.status).to.equal(true)
+        });
+        
+        it('Should fail because quantity of altContract is a user address', async function () {
+            contract = new web3.eth.Contract(contants.ABI_PORTAL, portalAddress);
+            let count = await web3.eth.getTransactionCount(publicKey, "pending")
+        
+            let quantity = await web3.utils.toWei((1*0.0006849315).toString())
 
+            let txObject = {
+                from: publicKey,
+                to: portalAddress,
+                gasPrice: 25 * 1000000000,
+                gasLimit: 1000000,
+                chainId: 4,
+                nonce: web3.utils.toHex(count),
+                data: contract.methods.stakeXIO('1000000000000000000',quantity, '0',  2 * 60 * 1000, 1, "ZRX", '0x0000000000000000000000000000000000000000').encodeABI()
+            }
+        
+            let signed = await web3.eth.accounts.signTransaction(txObject, privateKey)
+        
+            let tx = await web3.eth.sendSignedTransaction(signed.rawTransaction)
+                .on('error', (err) => {
+                    console.log(err)
+                }).on('transactionHash', (hash) => {
+                    console.log(hash)
+                }).on('confirmation', (confirmationNumber, receipt) => {
+                    if (confirmationNumber === 1) {
+                        console.log(receipt)
+                    }
+                })
+            expect(tx.status).to.equal(true)
+        });
+        
+        it('Should fail because duration is zero', async function () {
+            contract = new web3.eth.Contract(contants.ABI_PORTAL, portalAddress);
+            let count = await web3.eth.getTransactionCount(publicKey, "pending")
+        
+            let quantity = await web3.utils.toWei((1*0.0006849315).toString())
+
+            let txObject = {
+                from: publicKey,
+                to: portalAddress,
+                gasPrice: 25 * 1000000000,
+                gasLimit: 1000000,
+                chainId: 4,
+                nonce: web3.utils.toHex(count),
+                data: contract.methods.stakeXIO('1000000000000000000',quantity, '0',  0, 1, "ZRX", '0x0000000000000000000000000000000000000000').encodeABI()
+            }
+        
+            let signed = await web3.eth.accounts.signTransaction(txObject, privateKey)
+        
+            let tx = await web3.eth.sendSignedTransaction(signed.rawTransaction)
+                .on('error', (err) => {
+                    console.log(err)
+                }).on('transactionHash', (hash) => {
+                    console.log(hash)
+                }).on('confirmation', (confirmationNumber, receipt) => {
+                    if (confirmationNumber === 1) {
+                        console.log(receipt)
+                    }
+                })
+            expect(tx.status).to.equal(true)
+        });
    });
 
-    // describe('Withdraw', function () {
-    //     it('Should work perfectly', async function () {
-    //         contract = new web3.eth.Contract(contants.ABI_PORTAL, portalAddress);
-    //         let count = await web3.eth.getTransactionCount(publicKey, "pending")
-    //
-    //         let txObject = {
-    //             from: publicKey,
-    //             to: portalAddress,
-    //             gasPrice: 25 * 1000000000,
-    //             gasLimit: 1000000,
-    //             chainId: 4,
-    //             nonce: web3.utils.toHex(count),
-    //             data: contract.methods.withdrawXIO('1000000000000000000').encodeABI()
-    //         }
-    //
-    //         let signed = await web3.eth.accounts.signTransaction(txObject, privateKey)
-    //
-    //         let tx = await web3.eth.sendSignedTransaction(signed.rawTransaction)
-    //             .on('error', (err) => {
-    //                 console.log(err)
-    //             }).on('transactionHash', (hash) => {
-    //                 console.log(hash)
-    //             }).on('confirmation', (confirmationNumber, receipt) => {
-    //                 if (confirmationNumber === 1) {
-    //                     console.log(receipt)
-    //                 }
-    //             })
-    //         expect(tx.status).to.equal(true)
-    //         // 14284209926228481
-    //     });
-    //
-    //
-    //     it('Should not work because amount is 0', async function () {
-    //         contract = new web3.eth.Contract(contants.ABI_PORTAL, portalAddress);
-    //         let count = await web3.eth.getTransactionCount(publicKey, "pending")
-    //
-    //         let txObject = {
-    //             from: publicKey,
-    //             to: portalAddress,
-    //             gasPrice: 25 * 1000000000,
-    //             gasLimit: 1000000,
-    //             chainId: 4,
-    //             nonce: web3.utils.toHex(count),
-    //             data: contract.methods.withdrawXIO('0').encodeABI()
-    //         }
-    //
-    //         let signed = await web3.eth.accounts.signTransaction(txObject, privateKey)
-    //
-    //         let tx = await web3.eth.sendSignedTransaction(signed.rawTransaction)
-    //             .on('error', (err) => {
-    //                 console.log(err)
-    //             }).on('transactionHash', (hash) => {
-    //                 console.log(hash)
-    //             }).on('confirmation', (confirmationNumber, receipt) => {
-    //                 if (confirmationNumber === 1) {
-    //                     console.log(receipt)
-    //                 }
-    //             })
-    //         expect(tx.status).to.equal(true)
-    //         // 14284209926228481
-    //     });
-    //
-    // });
-
-
+    describe('Withdraw', function () {
+        it('Should work perfectly', async function () {
+            contract = new web3.eth.Contract(contants.ABI_PORTAL, portalAddress);
+            let count = await web3.eth.getTransactionCount(publicKey, "pending")
+    
+            let txObject = {
+                from: publicKey,
+                to: portalAddress,
+                gasPrice: 25 * 1000000000,
+                gasLimit: 1000000,
+                chainId: 4,
+                nonce: web3.utils.toHex(count),
+                data: contract.methods.withdrawXIO('1000000000000000000').encodeABI()
+            }
+    
+            let signed = await web3.eth.accounts.signTransaction(txObject, privateKey)
+    
+            let tx = await web3.eth.sendSignedTransaction(signed.rawTransaction)
+                .on('error', (err) => {
+                    console.log(err)
+                }).on('transactionHash', (hash) => {
+                    console.log(hash)
+                }).on('confirmation', (confirmationNumber, receipt) => {
+                    if (confirmationNumber === 1) {
+                        console.log(receipt)
+                    }
+                })
+            expect(tx.status).to.equal(true)
+        });
+    
+        it('Should not work because amount is 0', async function () {
+            contract = new web3.eth.Contract(contants.ABI_PORTAL, portalAddress);
+            let count = await web3.eth.getTransactionCount(publicKey, "pending")
+    
+            let txObject = {
+                from: publicKey,
+                to: portalAddress,
+                gasPrice: 25 * 1000000000,
+                gasLimit: 1000000,
+                chainId: 4,
+                nonce: web3.utils.toHex(count),
+                data: contract.methods.withdrawXIO('0').encodeABI()
+            }
+    
+            let signed = await web3.eth.accounts.signTransaction(txObject, privateKey)
+    
+            let tx = await web3.eth.sendSignedTransaction(signed.rawTransaction)
+                .on('error', (err) => {
+                    console.log(err)
+                }).on('transactionHash', (hash) => {
+                    console.log(hash)
+                }).on('confirmation', (confirmationNumber, receipt) => {
+                    if (confirmationNumber === 1) {
+                        console.log(receipt)
+                    }
+                })
+            expect(tx.status).to.equal(true)
+        });
+    });
 });
-
-
-
