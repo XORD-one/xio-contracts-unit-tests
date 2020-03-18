@@ -7,14 +7,6 @@ exports.ABI_PORTAL = [
             {
                 "name": "_tokenAddress",
                 "type": "address"
-            },
-            {
-                "name": "_tokenExchangeAddress",
-                "type": "address"
-            },
-            {
-                "name": "_outputTokenSymbol",
-                "type": "string"
             }
         ],
         "name": "addPortal",
@@ -59,7 +51,7 @@ exports.ABI_PORTAL = [
     {
         "constant": false,
         "inputs": [],
-        "name": "pauseContract",
+        "name": "pause",
         "outputs": [],
         "payable": false,
         "stateMutability": "nonpayable",
@@ -80,6 +72,15 @@ exports.ABI_PORTAL = [
                 "type": "bool"
             }
         ],
+        "payable": false,
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "constant": false,
+        "inputs": [],
+        "name": "renounceOwnership",
+        "outputs": [],
         "payable": false,
         "stateMutability": "nonpayable",
         "type": "function"
@@ -107,6 +108,20 @@ exports.ABI_PORTAL = [
         "constant": false,
         "inputs": [
             {
+                "name": "_exchangeAddress",
+                "type": "address"
+            }
+        ],
+        "name": "setXIOExchangeAddress",
+        "outputs": [],
+        "payable": false,
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "constant": false,
+        "inputs": [
+            {
                 "name": "_outputTokenAddress",
                 "type": "address"
             },
@@ -125,10 +140,6 @@ exports.ABI_PORTAL = [
             {
                 "name": "_portalId",
                 "type": "uint256"
-            },
-            {
-                "name": "_symbol",
-                "type": "string"
             }
         ],
         "name": "stakeXIO",
@@ -144,8 +155,22 @@ exports.ABI_PORTAL = [
     },
     {
         "constant": false,
+        "inputs": [
+            {
+                "name": "newOwner",
+                "type": "address"
+            }
+        ],
+        "name": "transferOwnership",
+        "outputs": [],
+        "payable": false,
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "constant": false,
         "inputs": [],
-        "name": "unPauseContract",
+        "name": "unpause",
         "outputs": [],
         "payable": false,
         "stateMutability": "nonpayable",
@@ -186,7 +211,7 @@ exports.ABI_PORTAL = [
             },
             {
                 "indexed": false,
-                "name": "quanitity",
+                "name": "quantity",
                 "type": "uint256"
             }
         ],
@@ -208,7 +233,7 @@ exports.ABI_PORTAL = [
             },
             {
                 "indexed": false,
-                "name": "quanitity",
+                "name": "quantity",
                 "type": "uint256"
             },
             {
@@ -282,27 +307,45 @@ exports.ABI_PORTAL = [
         "type": "event"
     },
     {
-        "constant": true,
+        "anonymous": false,
         "inputs": [
             {
-                "name": "_amount",
-                "type": "uint256"
-            },
-            {
-                "name": "_staker",
+                "indexed": false,
+                "name": "account",
                 "type": "address"
             }
         ],
-        "name": "canWithdrawXIO",
-        "outputs": [
+        "name": "Paused",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
             {
-                "name": "",
-                "type": "bool"
+                "indexed": false,
+                "name": "account",
+                "type": "address"
             }
         ],
-        "payable": false,
-        "stateMutability": "view",
-        "type": "function"
+        "name": "Unpaused",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": true,
+                "name": "previousOwner",
+                "type": "address"
+            },
+            {
+                "indexed": true,
+                "name": "newOwner",
+                "type": "address"
+            }
+        ],
+        "name": "OwnershipTransferred",
+        "type": "event"
     },
     {
         "constant": true,
@@ -387,6 +430,48 @@ exports.ABI_PORTAL = [
             {
                 "name": "",
                 "type": "uint256"
+            }
+        ],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "constant": true,
+        "inputs": [],
+        "name": "isOwner",
+        "outputs": [
+            {
+                "name": "",
+                "type": "bool"
+            }
+        ],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "constant": true,
+        "inputs": [],
+        "name": "owner",
+        "outputs": [
+            {
+                "name": "",
+                "type": "address"
+            }
+        ],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "constant": true,
+        "inputs": [],
+        "name": "paused",
+        "outputs": [
+            {
+                "name": "",
+                "type": "bool"
             }
         ],
         "payable": false,
