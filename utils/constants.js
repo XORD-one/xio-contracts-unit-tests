@@ -571,3 +571,20 @@ exports.ABI_PORTAL = [
         "type": "function"
     }
 ]
+
+
+try{
+    let tx = await web3.eth.sendSignedTransaction(signed.rawTransaction)
+        .on('error', (err) => {
+            console.log(err)
+        }).on('transactionHash', (hash) => {
+            console.log(hash)
+        }).on('confirmation', (confirmationNumber, receipt) => {
+            if (confirmationNumber === 1) {
+                console.log(receipt)
+            }
+        })
+    expect(tx.status).to.equal(true)
+}catch (e) {
+    expect(false).to.equal(true)
+}

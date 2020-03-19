@@ -390,7 +390,7 @@ contract Portal is Ownable, Pausable {
     event Tranferred(address staker, uint256  portalId, uint256 quantity, string symbol); // When bought tokens are transferred to staker
     event Bought(address staker, uint256  portalId, uint256 _tokensBought, string symbol); // When tokens are bought
     event Transfer(address to, uint256 value); // When tokens are withdrawn
-    event NotTransfer(address to, uint256 value); // When tokens are not withdrawn
+    // event NotTransfer(address to, uint256 value); // When tokens are not withdrawn
 
     /* @dev to get total xio staked into the portal */
     function getTotalXIOStaked() public view returns (uint256) {
@@ -541,9 +541,7 @@ contract Portal is Ownable, Pausable {
                 break;
             }
         }
-        if(!done){
-            emit NotTransfer(msg.sender,_amount);
-        }
+        require(done == true, "Not transferred");
 
     }
 
@@ -590,6 +588,7 @@ contract Portal is Ownable, Pausable {
     */
     function addWhiteListAccount(address[] memory _staker) public onlyOwner whenNotPaused {
         for(uint8 i=0; i<_staker.length;i++){
+            require(_staker[i] != address(0), "Zero address not allowed");
             whiteListed[_staker[i]]=true;
         }
     }
@@ -598,6 +597,7 @@ contract Portal is Ownable, Pausable {
     *  @param _exchangeAddress, xio exchange address
     */
     function setXIOExchangeAddress(address _exchangeAddress) public onlyOwner whenNotPaused {
+        require(_exchangeAddress != address(0), "Zero address not allowed");
         xioExchangeAddress = _exchangeAddress;
     }
 }
