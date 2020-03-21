@@ -349,7 +349,6 @@ contract Portal is Ownable, Pausable {
     using SafeMath for uint256;
     using SafeMath for uint32;
 
-    uint256 public totalXio;
     uint256 interestRate = 684931506849315;
     uint256 constant MAX_UINT = 2**256 - 1;
     uint256 constant ONE_DAY = 24*60*60;
@@ -391,11 +390,6 @@ contract Portal is Ownable, Pausable {
     event Bought(address staker, uint256  portalId, uint256 _tokensBought, string symbol); // When tokens are bought
     event Transfer(address to, uint256 value); // When tokens are withdrawn
     // event NotTransfer(address to, uint256 value); // When tokens are not withdrawn
-
-    /* @dev to get total xio staked into the portal */
-    function getTotalXIOStaked() public view returns (uint256) {
-        return totalXio;
-    }
 
 
     /* @dev to get interest rate of the portal */
@@ -503,7 +497,6 @@ contract Portal is Ownable, Pausable {
 
         portalData[_portalId].xioStaked = portalData[_portalId].xioStaked.add(_xioQuantity)  ;
 
-        totalXio = totalXio + _xioQuantity;
 
         Token(xioContractAddress).transferFrom(msg.sender, address(this),_xioQuantity);
 
@@ -533,8 +526,8 @@ contract Portal is Ownable, Pausable {
                     stakerArray[i].publicKey = 0x0000000000000000000000000000000000000000;
                     _amount = _amount.sub(stakerArray[i].stakeQuantity);
                     withdrawAmount = withdrawAmount.add(stakerArray[i].stakeQuantity);
-                    stakerArray[i].stakeQuantity = 0;
                     portalData[stakerArray[i].portalId].xioStaked = portalData[stakerArray[i].portalId].xioStaked.sub(stakerArray[i].stakeQuantity);
+                    stakerArray[i].stakeQuantity = 0;
                 }
                 else if(_amount == stakerArray[i].stakeQuantity){
                     stakerArray[i].publicKey = 0x0000000000000000000000000000000000000000;
@@ -552,7 +545,6 @@ contract Portal is Ownable, Pausable {
             }
         }
         require(withdrawAmount >= _amount, "Not Transferred");
-        totalXio = totalXio.sub(withdrawAmount);
         Token(xioContractAddress).transfer(msg.sender,withdrawAmount);
         emit Transfer(msg.sender,_amount);
     }
@@ -568,7 +560,7 @@ contract Portal is Ownable, Pausable {
         require(exchangeAddress != address(0));
         string memory symbol = Token(_tokenAddress).symbol();
         portalData[portalId] = PortalData(portalId, _tokenAddress, exchangeAddress, symbol, 0);
-        portalId++;
+        portalId.add(1);
         return true;
     }
 
