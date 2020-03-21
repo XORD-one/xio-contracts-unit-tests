@@ -525,24 +525,36 @@ contract Portal is Ownable, Pausable {
     */
     function withdrawXIO(uint256 _amount) public whenNotPaused {
         require(_amount>0, "Amount should be greater than 0");
-        bool done = false;
+        uint256 withdrawAmount = 0;
         StakerData[] storage stakerArray= stakerData[msg.sender];
         for(uint256 i=0; i<stakerArray.length;i++){
-            if((stakerArray[i].stakeInitiationTimestamp.add(stakerArray[i].stakeDurationTimestamp)  <= block.timestamp) && (stakerArray[i].stakeQuantity >= _amount) && (stakerArray[i].publicKey != address(0))){
-                Token(xioContractAddress).transfer(msg.sender,_amount);
-                emit Transfer(msg.sender,_amount);
-                stakerArray[i].stakeQuantity = stakerArray[i].stakeQuantity.sub(_amount);
-                portalData[stakerArray[i].portalId].xioStaked = portalData[stakerArray[i].portalId].xioStaked.sub( _amount);
-                totalXio = totalXio.sub(_amount);
-                if(stakerArray[i].stakeQuantity==0){
+            if((stakerArray[i].stakeInitiationTimestamp.add(stakerArray[i].stakeDurationTimestamp)  <= block.timestamp) && (stakerArray[i].publicKey != address(0))){
+                if(_amount > stakerArray[i].stakeQuantity){
                     stakerArray[i].publicKey = 0x0000000000000000000000000000000000000000;
+                    _amount = _amount.sub(stakerArray[i].stakeQuantity);
+                    withdrawAmount = withdrawAmount.add(stakerArray[i].stakeQuantity);
+                    stakerArray[i].stakeQuantity = 0;
+                    portalData[stakerArray[i].portalId].xioStaked = portalData[stakerArray[i].portalId].xioStaked.sub(stakerArray[i].stakeQuantity);
                 }
-                done=true;
-                break;
+                else if(_amount == stakerArray[i].stakeQuantity){
+                    stakerArray[i].publicKey = 0x0000000000000000000000000000000000000000;
+                    withdrawAmount = withdrawAmount.add(stakerArray[i].stakeQuantity);
+                    stakerArray[i].stakeQuantity = 0;
+                    portalData[stakerArray[i].portalId].xioStaked = portalData[stakerArray[i].portalId].xioStaked.sub(_amount);
+                    break;
+                }else if(_amount < stakerArray[i].stakeQuantity){
+                    stakerArray[i].stakeQuantity = stakerArray[i].stakeQuantity.sub(_amount);
+                    withdrawAmount = withdrawAmount.add(stakerArray[i].stakeQuantity);
+                    portalData[stakerArray[i].portalId].xioStaked = portalData[stakerArray[i].portalId].xioStaked.sub( _amount);
+                    break;
+                }
+
             }
         }
-        require(done == true, "Not transferred");
-
+        require(withdrawAmount >= _amount, "Not Transferred");
+        totalXio = totalXio.sub(withdrawAmount);
+        Token(xioContractAddress).transfer(msg.sender,withdrawAmount);
+        emit Transfer(msg.sender,_amount);
     }
 
 
@@ -564,7 +576,6 @@ contract Portal is Ownable, Pausable {
     *  @param _portalId, portal Id of portal
     */
     function removePortal(uint256 _portalId) public onlyOwner whenNotPaused returns(bool) {
-        require(_portalId >0 , "Invalid Portal id");
         require(portalData[_portalId].tokenAddress != address(0),"Portal does not exist");
         portalData[_portalId] = PortalData(_portalId, 0x0000000000000000000000000000000000000000, 0x0000000000000000000000000000000000000000, "NONE", 0);
         return true;
