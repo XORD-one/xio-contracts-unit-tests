@@ -29,7 +29,7 @@ const nonWhitelisterAddress = '0x0e2a0C79Fa362Be116908cCdfbe8Df9EbAB787b8'
 
 const nonWhitelisterPvtKey = '0x72B1727402196EB8C1A74E6464C1E4B62E0F339E98154A0B8A88F2419ECE319D'
 
-let portalAddress = '0xEb08b912d283025faF397EE178c805986c0DF501'
+let portalAddress = '0x781bFa3C6FaB7F2dA2773d55D8c7778CE7924d31'
 let xioAddress = '0x5d3069CBb2BFb7ebB9566728E44EaFDaC3E52708'
 let omgAddress = '0x879884c3C46A24f56089f3bBbe4d5e38dB5788C0'
 let xioExchangeAddress = '0xf9f62d768DaD7ccc2E60a115FFDAC88b9B8c70cc'
@@ -40,7 +40,7 @@ let interestRate = 684931506849315
 let zeroXPortalId = 1
 let daiPortalId = 2
 
-/*** basic tests ***/
+/*** basic test ***/
 describe('Portal Test', async () => {
 
     describe("When not paused", async () => {
