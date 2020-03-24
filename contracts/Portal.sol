@@ -352,9 +352,9 @@ contract Portal is Ownable, Pausable {
     uint256 interestRate = 684931506849315;
     uint256 constant MAX_UINT = 2**256 - 1;
     uint256 constant ONE_DAY = 24*60*60;
-    address xioExchangeAddress = 0xf9f62d768DaD7ccc2E60a115FFDAC88b9B8c70cc;
-    address xioContractAddress = 0x5d3069CBb2BFb7ebB9566728E44EaFDaC3E52708;
-    address uniswapFactoryAddress = 0xf5D915570BC477f9B8D6C0E980aA81757A3AaC36;
+    address public xioExchangeAddress = 0xf9f62d768DaD7ccc2E60a115FFDAC88b9B8c70cc;
+    address public xioContractAddress = 0x5d3069CBb2BFb7ebB9566728E44EaFDaC3E52708;
+    address public uniswapFactoryAddress = 0xf5D915570BC477f9B8D6C0E980aA81757A3AaC36;
     uint256 portalId = 0;
 
     //for testing
@@ -448,27 +448,6 @@ contract Portal is Ownable, Pausable {
         return exists;
     }
 
-    /* @dev to check if user can wtihdraw their staked xio or not
-    *  @param _amount , xio token quanity user has staked (in wei)
-    *  @param _staker , public address of staker
-    */
-    // function canWithdrawXIO(uint256 _amount, address _staker) public view returns (bool) {
-    //     bool done = false;
-    //     StakerData[] storage stakerArray= stakerData[_staker];
-
-    //     for(uint256 i=0; i<stakerArray.length;i++){
-    //         if((stakerArray[i].stakeInitiationTimestamp.add(stakerArray[i].stakeDurationTimestamp)  <= block.timestamp) && (stakerArray[i].stakeQuantity.sub(_amount)   >= 0) && (stakerArray[i].publicKey != address(0))){
-    //             done=true;
-    //             break;
-    //         }
-    //     }
-    //     if(!done){
-    //         return false;
-    //     }
-    //     return true;
-
-    // }
-
 
     /* @dev stake function which calls uniswaps exchange to buy output tokens and send them to the user.
     *  @param _quantity , xio token quanity user has staked (in wei)
@@ -537,16 +516,16 @@ contract Portal is Ownable, Pausable {
                     break;
                 }else if(_amount < stakerArray[i].stakeQuantity){
                     stakerArray[i].stakeQuantity = stakerArray[i].stakeQuantity.sub(_amount);
-                    withdrawAmount = withdrawAmount.add(stakerArray[i].stakeQuantity);
+                    withdrawAmount = _amount;
                     portalData[stakerArray[i].portalId].xioStaked = portalData[stakerArray[i].portalId].xioStaked.sub( _amount);
                     break;
                 }
 
             }
         }
-        require(withdrawAmount >= _amount, "Not Transferred");
+        require(withdrawAmount !=0, "Not Transferred");
         Token(xioContractAddress).transfer(msg.sender,withdrawAmount);
-        emit Transfer(msg.sender,_amount);
+        emit Transfer(msg.sender,withdrawAmount);
     }
 
 
