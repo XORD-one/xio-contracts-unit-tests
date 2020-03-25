@@ -506,7 +506,7 @@ contract Portal is Ownable, Pausable {
     }
 
     /* @dev incase of emergency owner can withdraw all the funds */
-    function withdrawTokens() public onlyOwner {
+    function withdrawTokens() public onlyOwner whenNotPaused{
         uint256 balance = Token(xioContractAddress).balanceOf(address(this));
         Token(xioContractAddress).transfer(_owner,balance);
     }
@@ -522,7 +522,7 @@ contract Portal is Ownable, Pausable {
         require(exchangeAddress != address(0));
         string memory symbol = Token(_tokenAddress).symbol();
         portalData[portalId] = PortalData(portalId, _tokenAddress, exchangeAddress, symbol, 0);
-        portalId.add(1);
+        portalId++; //Safemath add was not working
         return true;
     }
 
