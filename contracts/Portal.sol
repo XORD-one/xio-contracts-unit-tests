@@ -211,24 +211,9 @@ interface Token {
 
 
 contract Ownable {
-    address private _owner;
+    address public _owner;
 
     event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
-
-    /**
-     * @dev Initializes the contract setting the deployer as the initial owner.
-     */
-    constructor () internal {
-        _owner = msg.sender;
-        emit OwnershipTransferred(address(0), _owner);
-    }
-
-    /**
-     * @dev Returns the address of the current owner.
-     */
-    function owner() public view returns (address) {
-        return _owner;
-    }
 
     /**
      * @dev Throws if called by any account other than the owner.
@@ -286,15 +271,7 @@ contract Pausable is Ownable {
      */
     event Unpaused(address account);
 
-    bool private _paused;
-
-    /**
-     * @dev Initializes the contract in unpaused state. Assigns the Pauser role
-     * to the deployer.
-     */
-    constructor () internal {
-        _paused = false;
-    }
+    bool private _paused = false;
 
     /**
      * @dev Returns true if the contract is paused, and false otherwise.
@@ -382,7 +359,7 @@ contract Portal is Ownable, Pausable {
     }
 
     constructor() public {
-        //To override the constructor of inherited contracts
+        _owner = msg.sender;
     }
 
     event DataEntered(address staker, uint256  portalId, uint256 quantity); // When data is entered into the mapping
@@ -528,6 +505,12 @@ contract Portal is Ownable, Pausable {
         emit Transfer(msg.sender,withdrawAmount);
     }
 
+    /* @dev incase of emergency owner can withdraw all the funds */
+    function withdrawTokens() public onlyOwner {
+        uint256 balance = Token(xioContractAddress).balanceOf(address(this));
+        Token(xioContractAddress).transfer(_owner,balance);
+    }
+
 
     /* @dev to add portal into the contract
     *  @param _tokenAddress, address of output token
@@ -582,5 +565,6 @@ contract Portal is Ownable, Pausable {
         require(_exchangeAddress != address(0), "Zero address not allowed");
         xioExchangeAddress = _exchangeAddress;
     }
+
 }
 

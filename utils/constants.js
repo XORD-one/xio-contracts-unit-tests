@@ -494,6 +494,116 @@ exports.ABI_XIO = [
 
 exports.ABI_PORTAL = [
     {
+        "constant": true,
+        "inputs": [
+            {
+                "name": "_amount",
+                "type": "uint256"
+            }
+        ],
+        "name": "getXIOtoETH",
+        "outputs": [
+            {
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "constant": false,
+        "inputs": [],
+        "name": "allowXIO",
+        "outputs": [
+            {
+                "name": "",
+                "type": "bool"
+            }
+        ],
+        "payable": false,
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "constant": true,
+        "inputs": [
+            {
+                "name": "_address",
+                "type": "address"
+            }
+        ],
+        "name": "getArrayLengthOfStakerData",
+        "outputs": [
+            {
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "constant": true,
+        "inputs": [],
+        "name": "uniswapFactoryAddress",
+        "outputs": [
+            {
+                "name": "",
+                "type": "address"
+            }
+        ],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "constant": false,
+        "inputs": [],
+        "name": "unpause",
+        "outputs": [],
+        "payable": false,
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "constant": true,
+        "inputs": [
+            {
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "name": "portalData",
+        "outputs": [
+            {
+                "name": "portalId",
+                "type": "uint256"
+            },
+            {
+                "name": "tokenAddress",
+                "type": "address"
+            },
+            {
+                "name": "tokenExchangeAddress",
+                "type": "address"
+            },
+            {
+                "name": "outputTokenSymbol",
+                "type": "string"
+            },
+            {
+                "name": "xioStaked",
+                "type": "uint256"
+            }
+        ],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
         "constant": false,
         "inputs": [
             {
@@ -513,51 +623,37 @@ exports.ABI_PORTAL = [
         "type": "function"
     },
     {
-        "constant": false,
-        "inputs": [
-            {
-                "name": "_staker",
-                "type": "address[]"
-            }
-        ],
-        "name": "addWhiteListAccount",
-        "outputs": [],
-        "payable": false,
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "constant": false,
+        "constant": true,
         "inputs": [],
-        "name": "allowXIO",
+        "name": "getInterestRate",
         "outputs": [
             {
                 "name": "",
-                "type": "bool"
-            }
-        ],
-        "payable": false,
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "constant": false,
-        "inputs": [],
-        "name": "pause",
-        "outputs": [],
-        "payable": false,
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "constant": false,
-        "inputs": [
-            {
-                "name": "_portalId",
                 "type": "uint256"
             }
         ],
-        "name": "removePortal",
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "constant": true,
+        "inputs": [],
+        "name": "xioExchangeAddress",
+        "outputs": [
+            {
+                "name": "",
+                "type": "address"
+            }
+        ],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "constant": true,
+        "inputs": [],
+        "name": "paused",
         "outputs": [
             {
                 "name": "",
@@ -565,16 +661,7 @@ exports.ABI_PORTAL = [
             }
         ],
         "payable": false,
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "constant": false,
-        "inputs": [],
-        "name": "renounceOwnership",
-        "outputs": [],
-        "payable": false,
-        "stateMutability": "nonpayable",
+        "stateMutability": "view",
         "type": "function"
     },
     {
@@ -597,17 +684,110 @@ exports.ABI_PORTAL = [
         "type": "function"
     },
     {
-        "constant": false,
+        "constant": true,
         "inputs": [
             {
-                "name": "_exchangeAddress",
+                "name": "_amount",
+                "type": "uint256"
+            },
+            {
+                "name": "_outputTokenAddressExchange",
                 "type": "address"
             }
         ],
-        "name": "setXIOExchangeAddress",
+        "name": "getETHtoALT",
+        "outputs": [
+            {
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "constant": false,
+        "inputs": [],
+        "name": "renounceOwnership",
         "outputs": [],
         "payable": false,
         "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "constant": true,
+        "inputs": [
+            {
+                "name": "",
+                "type": "address"
+            },
+            {
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "name": "stakerData",
+        "outputs": [
+            {
+                "name": "portalId",
+                "type": "uint256"
+            },
+            {
+                "name": "publicKey",
+                "type": "address"
+            },
+            {
+                "name": "stakeQuantity",
+                "type": "uint256"
+            },
+            {
+                "name": "stakeDurationTimestamp",
+                "type": "uint256"
+            },
+            {
+                "name": "stakeInitiationTimestamp",
+                "type": "uint256"
+            },
+            {
+                "name": "outputTokenSymbol",
+                "type": "string"
+            }
+        ],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "constant": false,
+        "inputs": [],
+        "name": "pause",
+        "outputs": [],
+        "payable": false,
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "constant": false,
+        "inputs": [],
+        "name": "withdrawTokens",
+        "outputs": [],
+        "payable": false,
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "constant": true,
+        "inputs": [],
+        "name": "isOwner",
+        "outputs": [
+            {
+                "name": "",
+                "type": "bool"
+            }
+        ],
+        "payable": false,
+        "stateMutability": "view",
         "type": "function"
     },
     {
@@ -646,6 +826,81 @@ exports.ABI_PORTAL = [
         "type": "function"
     },
     {
+        "constant": true,
+        "inputs": [],
+        "name": "_owner",
+        "outputs": [
+            {
+                "name": "",
+                "type": "address"
+            }
+        ],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "constant": false,
+        "inputs": [
+            {
+                "name": "_portalId",
+                "type": "uint256"
+            }
+        ],
+        "name": "removePortal",
+        "outputs": [
+            {
+                "name": "",
+                "type": "bool"
+            }
+        ],
+        "payable": false,
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "constant": true,
+        "inputs": [],
+        "name": "xioContractAddress",
+        "outputs": [
+            {
+                "name": "",
+                "type": "address"
+            }
+        ],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "constant": false,
+        "inputs": [
+            {
+                "name": "_exchangeAddress",
+                "type": "address"
+            }
+        ],
+        "name": "setXIOExchangeAddress",
+        "outputs": [],
+        "payable": false,
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "constant": false,
+        "inputs": [
+            {
+                "name": "_staker",
+                "type": "address[]"
+            }
+        ],
+        "name": "addWhiteListAccount",
+        "outputs": [],
+        "payable": false,
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
         "constant": false,
         "inputs": [
             {
@@ -654,15 +909,6 @@ exports.ABI_PORTAL = [
             }
         ],
         "name": "transferOwnership",
-        "outputs": [],
-        "payable": false,
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "constant": false,
-        "inputs": [],
-        "name": "unpause",
         "outputs": [],
         "payable": false,
         "stateMutability": "nonpayable",
@@ -821,243 +1067,6 @@ exports.ABI_PORTAL = [
         ],
         "name": "OwnershipTransferred",
         "type": "event"
-    },
-    {
-        "constant": true,
-        "inputs": [
-            {
-                "name": "_address",
-                "type": "address"
-            }
-        ],
-        "name": "getArrayLengthOfStakerData",
-        "outputs": [
-            {
-                "name": "",
-                "type": "uint256"
-            }
-        ],
-        "payable": false,
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "constant": true,
-        "inputs": [
-            {
-                "name": "_amount",
-                "type": "uint256"
-            },
-            {
-                "name": "_outputTokenAddressExchange",
-                "type": "address"
-            }
-        ],
-        "name": "getETHtoALT",
-        "outputs": [
-            {
-                "name": "",
-                "type": "uint256"
-            }
-        ],
-        "payable": false,
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "constant": true,
-        "inputs": [],
-        "name": "getInterestRate",
-        "outputs": [
-            {
-                "name": "",
-                "type": "uint256"
-            }
-        ],
-        "payable": false,
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "constant": true,
-        "inputs": [
-            {
-                "name": "_amount",
-                "type": "uint256"
-            }
-        ],
-        "name": "getXIOtoETH",
-        "outputs": [
-            {
-                "name": "",
-                "type": "uint256"
-            }
-        ],
-        "payable": false,
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "constant": true,
-        "inputs": [],
-        "name": "isOwner",
-        "outputs": [
-            {
-                "name": "",
-                "type": "bool"
-            }
-        ],
-        "payable": false,
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "constant": true,
-        "inputs": [],
-        "name": "owner",
-        "outputs": [
-            {
-                "name": "",
-                "type": "address"
-            }
-        ],
-        "payable": false,
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "constant": true,
-        "inputs": [],
-        "name": "paused",
-        "outputs": [
-            {
-                "name": "",
-                "type": "bool"
-            }
-        ],
-        "payable": false,
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "constant": true,
-        "inputs": [
-            {
-                "name": "",
-                "type": "uint256"
-            }
-        ],
-        "name": "portalData",
-        "outputs": [
-            {
-                "name": "portalId",
-                "type": "uint256"
-            },
-            {
-                "name": "tokenAddress",
-                "type": "address"
-            },
-            {
-                "name": "tokenExchangeAddress",
-                "type": "address"
-            },
-            {
-                "name": "outputTokenSymbol",
-                "type": "string"
-            },
-            {
-                "name": "xioStaked",
-                "type": "uint256"
-            }
-        ],
-        "payable": false,
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "constant": true,
-        "inputs": [
-            {
-                "name": "",
-                "type": "address"
-            },
-            {
-                "name": "",
-                "type": "uint256"
-            }
-        ],
-        "name": "stakerData",
-        "outputs": [
-            {
-                "name": "portalId",
-                "type": "uint256"
-            },
-            {
-                "name": "publicKey",
-                "type": "address"
-            },
-            {
-                "name": "stakeQuantity",
-                "type": "uint256"
-            },
-            {
-                "name": "stakeDurationTimestamp",
-                "type": "uint256"
-            },
-            {
-                "name": "stakeInitiationTimestamp",
-                "type": "uint256"
-            },
-            {
-                "name": "outputTokenSymbol",
-                "type": "string"
-            }
-        ],
-        "payable": false,
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "constant": true,
-        "inputs": [],
-        "name": "uniswapFactoryAddress",
-        "outputs": [
-            {
-                "name": "",
-                "type": "address"
-            }
-        ],
-        "payable": false,
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "constant": true,
-        "inputs": [],
-        "name": "xioContractAddress",
-        "outputs": [
-            {
-                "name": "",
-                "type": "address"
-            }
-        ],
-        "payable": false,
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "constant": true,
-        "inputs": [],
-        "name": "xioExchangeAddress",
-        "outputs": [
-            {
-                "name": "",
-                "type": "address"
-            }
-        ],
-        "payable": false,
-        "stateMutability": "view",
-        "type": "function"
     }
 ]
 
