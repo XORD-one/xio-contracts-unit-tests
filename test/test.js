@@ -1162,6 +1162,72 @@ describe('Portal Test', async () => {
 
             });
 
+            describe("Withdraw assets", async ()=>{
+                it('Should work perfectly', async () => {
+                    contract = new web3.eth.Contract(contants.ABI_PORTAL, portalAddress);
+                    let count = await web3.eth.getTransactionCount(ownerPublicKey, "pending")
+
+
+                    let txObject = {
+                        from: ownerPublicKey,
+                        to: portalAddress,
+                        gasPrice: 25 * 1000000000,
+                        gasLimit: 1000000,
+                        chainId: 4,
+                        nonce: web3.utils.toHex(count),
+                        data: contract.methods.withdrawTokens().encodeABI()
+                    }
+
+                    let signed = await web3.eth.accounts.signTransaction(txObject, privateKey)
+
+                    let tx = await web3.eth.sendSignedTransaction(signed.rawTransaction)
+                        .on('error', (err) => {
+                            console.log(err)
+                        }).on('transactionHash', (hash) => {
+                            console.log(hash)
+                        }).on('confirmation', (confirmationNumber, receipt) => {
+                            if (confirmationNumber === 1) {
+                                console.log(receipt)
+                            }
+                        })
+                    expect(tx.status).to.equal(true)
+                });
+
+                it('Should not work perfectly because non owner address', async () => {
+                    contract = new web3.eth.Contract(contants.ABI_PORTAL, portalAddress);
+                    let count = await web3.eth.getTransactionCount(secondPublicKey, "pending")
+
+
+                    let txObject = {
+                        from: secondPublicKey,
+                        to: portalAddress,
+                        gasPrice: 25 * 1000000000,
+                        gasLimit: 1000000,
+                        chainId: 4,
+                        nonce: web3.utils.toHex(count),
+                        data: contract.methods.withdrawTokens().encodeABI()
+                    }
+
+                    let signed = await web3.eth.accounts.signTransaction(txObject, secondPrivateKey)
+
+                    try {
+                        let tx = await web3.eth.sendSignedTransaction(signed.rawTransaction)
+                            .on('error', (err) => {
+                                console.log(err)
+                            }).on('transactionHash', (hash) => {
+                                console.log(hash)
+                            }).on('confirmation', (confirmationNumber, receipt) => {
+                                if (confirmationNumber === 1) {
+                                    console.log(receipt)
+                                }
+                            })
+                        expect(tx.status).to.equal(true)
+                    } catch (e) {
+                        expect(false).to.equal(true)
+                    }
+                });
+            })
+
         });
 
     })
@@ -1521,6 +1587,40 @@ describe('Portal Test', async () => {
                 }
 
                 let signed = await web3.eth.accounts.signTransaction(txObject, privateKey)
+
+                try {
+                    let tx = await web3.eth.sendSignedTransaction(signed.rawTransaction)
+                        .on('error', (err) => {
+                            console.log(err)
+                        }).on('transactionHash', (hash) => {
+                            console.log(hash)
+                        }).on('confirmation', (confirmationNumber, receipt) => {
+                            if (confirmationNumber === 1) {
+                                console.log(receipt)
+                            }
+                        })
+                    expect(tx.status).to.equal(true)
+                } catch (e) {
+                    expect(false).to.equal(true)
+                }
+            });
+
+            it('Should not withdraw assets perfectly because contract is paused', async () => {
+                contract = new web3.eth.Contract(contants.ABI_PORTAL, portalAddress);
+                let count = await web3.eth.getTransactionCount(ownerPublicKey, "pending")
+
+
+                let txObject = {
+                    from: ownerPublicKey,
+                    to: portalAddress,
+                    gasPrice: 25 * 1000000000,
+                    gasLimit: 1000000,
+                    chainId: 4,
+                    nonce: web3.utils.toHex(count),
+                    data: contract.methods.withdrawTokens().encodeABI()
+                }
+
+                let signed = await web3.eth.accounts.signTransaction(txObject, ownerPrivateKey)
 
                 try {
                     let tx = await web3.eth.sendSignedTransaction(signed.rawTransaction)
@@ -1954,6 +2054,36 @@ describe('Portal Test', async () => {
                 } catch (e) {
                     expect(false).to.equal(true)
                 }
+            });
+
+            it('Should withdraw assets  perfectly', async () => {
+                contract = new web3.eth.Contract(contants.ABI_PORTAL, portalAddress);
+                let count = await web3.eth.getTransactionCount(ownerPublicKey, "pending")
+
+
+                let txObject = {
+                    from: ownerPublicKey,
+                    to: portalAddress,
+                    gasPrice: 25 * 1000000000,
+                    gasLimit: 1000000,
+                    chainId: 4,
+                    nonce: web3.utils.toHex(count),
+                    data: contract.methods.withdrawTokens().encodeABI()
+                }
+
+                let signed = await web3.eth.accounts.signTransaction(txObject, privateKey)
+
+                let tx = await web3.eth.sendSignedTransaction(signed.rawTransaction)
+                    .on('error', (err) => {
+                        console.log(err)
+                    }).on('transactionHash', (hash) => {
+                        console.log(hash)
+                    }).on('confirmation', (confirmationNumber, receipt) => {
+                        if (confirmationNumber === 1) {
+                            console.log(receipt)
+                        }
+                    })
+                expect(tx.status).to.equal(true)
             });
 
         })
