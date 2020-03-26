@@ -3,7 +3,6 @@ var expect = require('chai').expect
 var Web3 = require('web3')
 const contants = require('../utils/constants')
 
-
 const OPTIONS = {
     transactionConfirmationBlocks: 1,
     transactionBlockTimeout: 5
@@ -41,15 +40,13 @@ let zeroXPortalId = 1
 let daiPortalId = 2
 
 /*** basic test ***/
-describe('Portal Test', async () => {
-
+describe('Owner functions', async () => {
     describe("When not paused", async () => {
         //Interest rate
         describe('Set Interest Rate', async () => {
             it('Should set interest rate because it is set by owner', async () => {
                 contract = new web3.eth.Contract(contants.ABI_PORTAL, portalAddress);
                 let count = await web3.eth.getTransactionCount(ownerPublicKey, "pending")
-
 
                 let txObject = {
                     from: ownerPublicKey,
@@ -192,7 +189,7 @@ describe('Portal Test', async () => {
                 expect(portal.tokenAddress).to.equal(zeroXAddress)
             });
 
-            it('Should Not Add Portal because exchange address is zero address', async () => {
+            it('Should Not Add Portal because token address is zero address', async () => {
                 contract = new web3.eth.Contract(contants.ABI_PORTAL, portalAddress);
                 let count = await web3.eth.getTransactionCount(ownerPublicKey, "pending")
                 let txObject = {
@@ -356,7 +353,6 @@ describe('Portal Test', async () => {
                     expect(false).to.equal(true)
                 }
             });
-
         })
 
         //Set XIO exchange address
@@ -391,7 +387,7 @@ describe('Portal Test', async () => {
                 expect(tx.status).to.equal(true)
             });
 
-            it('Xio exchange address is equal to exchange address', async () => {
+            it('XIO exchange address is equal to exchange address', async () => {
                 contract = new web3.eth.Contract(contants.ABI_PORTAL, portalAddress);
 
                 let address = await contract.methods.xioExchangeAddress().call()
@@ -460,7 +456,6 @@ describe('Portal Test', async () => {
                     })
                 expect(tx.status).to.equal(true)
             });
-
         })
 
         //Remove portal
@@ -568,7 +563,6 @@ describe('Portal Test', async () => {
                     expect(false).to.equal(true)
                 }
             });
-
         })
 
         describe('Allow XIO', async () => {
@@ -640,14 +634,10 @@ describe('Portal Test', async () => {
                 expect(tx.status).to.equal(true)
             });
         })
-
     })
     describe("Public functions", async () => {
-
         describe('Get XIO To ETH', async () => {
-
             it('Should Return ETH Price', async () => {
-
                 contract = new web3.eth.Contract(contants.ABI_PORTAL, portalAddress);
                 let tokenAmount = await web3.utils.toWei((100 * 0.000684931506849315 * 1).toString())
                 let tx = await contract.methods.getXIOtoETH(tokenAmount).call()
@@ -661,14 +651,10 @@ describe('Portal Test', async () => {
                     expect(false).to.equal(true)
                 }
             });
-
-
         });
 
         describe('Get ETH To OMG', async () => {
-
             it('Should Return OMG to ETH', async () => {
-
                 contract = new web3.eth.Contract(contants.ABI_PORTAL, portalAddress);
                 let eth = await web3.utils.toWei(ethSoldAmount)
                 let tx = await contract.methods.getETHtoALT(eth, omgExchangeAddress).call()
@@ -679,9 +665,7 @@ describe('Portal Test', async () => {
                     expect(false).to.equal(true)
                 }
             });
-
         });
-
 
         describe('Stake', async () => {
             it('Set allowance to 0', async () => {
@@ -717,7 +701,7 @@ describe('Portal Test', async () => {
 
             });
 
-            it('Allowance of xio exchange is 0 ', async () => {
+            it('Allowance of XIO exchange is 0 ', async () => {
                 let xioContract = await web3.eth.Contract(contants.ABI_XIO, xioAddress)
 
                 let allowance = await xioContract.method.allowance(portalAddress, xioExchangeAddress).call()
@@ -1093,7 +1077,6 @@ describe('Portal Test', async () => {
                 }
 
             });
-
         })
 
         describe('Withdraw', async () => {
@@ -1227,14 +1210,11 @@ describe('Portal Test', async () => {
                     }
                 });
             })
-
         });
-
     })
 
     describe("When paused", async () => {
         describe('Pausing the contract', async () => {
-
             it('Should not pause because of non owner', async () => {
                 contract = new web3.eth.Contract(contants.ABI_PORTAL, portalAddress);
                 let count = await web3.eth.getTransactionCount(secondPublicKey, "pending")
@@ -1297,7 +1277,6 @@ describe('Portal Test', async () => {
                     })
                 expect(tx.status).to.equal(true)
             });
-
         })
 
         describe('Executing functions after pausing', async () => {
@@ -2085,9 +2064,6 @@ describe('Portal Test', async () => {
                     })
                 expect(tx.status).to.equal(true)
             });
-
         })
-
     })
-
 })

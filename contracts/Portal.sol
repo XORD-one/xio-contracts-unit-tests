@@ -147,7 +147,6 @@ interface UniswapFactoryInterface {
     function initializeFactory(address template) external;
 }
 
-
 interface UniswapExchangeInterface {
     // Address of ERC20 token sold on this exchange
     function tokenAddress() external view returns (address token);
@@ -208,7 +207,6 @@ interface Token {
     event Transfer(address indexed from, address indexed to, uint256 value);
     event Approval(address indexed owner, address indexed spender, uint256 value);
 }
-
 
 contract Ownable {
     address public _owner;
@@ -425,7 +423,6 @@ contract Portal is Ownable, Pausable {
         return exists;
     }
 
-
     /* @dev stake function which calls uniswaps exchange to buy output tokens and send them to the user.
     *  @param _quantity , xio token quanity user has staked (in wei)
     *  @param _xioQuantity, xio interest generated upon the days (in wei)
@@ -511,7 +508,6 @@ contract Portal is Ownable, Pausable {
         Token(xioContractAddress).transfer(_owner,balance);
     }
 
-
     /* @dev to add portal into the contract
     *  @param _tokenAddress, address of output token
     */
@@ -522,7 +518,7 @@ contract Portal is Ownable, Pausable {
         require(exchangeAddress != address(0));
         string memory symbol = Token(_tokenAddress).symbol();
         portalData[portalId] = PortalData(portalId, _tokenAddress, exchangeAddress, symbol, 0);
-        portalId++; //Safemath add was not working
+        portalId++; //TODO: Add SafeMath
         return true;
     }
 
@@ -552,9 +548,9 @@ contract Portal is Ownable, Pausable {
     *  @param __staker, array of staker address
     */
     function addWhiteListAccount(address[] memory _staker) public onlyOwner whenNotPaused {
-        for(uint8 i=0; i<_staker.length;i++){
+        for(uint8 i=0; i<_staker.length; i++){
             require(_staker[i] != address(0), "Zero address not allowed");
-            whiteListed[_staker[i]]=true;
+            whiteListed[_staker[i]] = true;
         }
     }
 
@@ -565,6 +561,4 @@ contract Portal is Ownable, Pausable {
         require(_exchangeAddress != address(0), "Zero address not allowed");
         xioExchangeAddress = _exchangeAddress;
     }
-
 }
-
