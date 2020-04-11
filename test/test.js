@@ -150,6 +150,222 @@ describe('Owner functions', async () => {
                 }
             });
         });
+
+        describe('Set XIO Stake Quantity', async () => {
+            it('Should set xio stake quantity because it is set by owner', async () => {
+                contract = new web3.eth.Contract(contants.ABI_PORTAL, portalAddress);
+                let count = await web3.eth.getTransactionCount(ownerPublicKey, "pending")
+
+                let txObject = {
+                    from: ownerPublicKey,
+                    to: portalAddress,
+                    gasPrice: 25 * 1000000000,
+                    gasLimit: 1000000,
+                    chainId: 4,
+                    nonce: web3.utils.toHex(count),
+                    data: contract.methods.setXIOStakeQuantity(5000000000000000000000).encodeABI()
+                }
+
+                let signed = await web3.eth.accounts.signTransaction(txObject, ownerPrivateKey)
+
+                let tx = await web3.eth.sendSignedTransaction(signed.rawTransaction)
+                    .on('error', (err) => {
+                        console.log(err)
+                    }).on('transactionHash', (hash) => {
+                        console.log(hash)
+                    }).on('confirmation', (confirmationNumber, receipt) => {
+                        if (confirmationNumber === 1) {
+                            console.log(receipt)
+                        }
+                    })
+
+                expect(tx.status).to.equal(true)
+            });
+
+            it('Xio stake quantity is equal to ', async () => {
+                contract = new web3.eth.Contract(contants.ABI_PORTAL, portalAddress);
+
+                let rate = await contract.methods.getXIOStakeQuantity().call()
+
+                expect(Number(rate)).to.equal(5000000000000000000000)
+            });
+
+            it('Should not set xio stake quantity because it is not set by owner', async () => {
+                contract = new web3.eth.Contract(contants.ABI_PORTAL, portalAddress);
+                let count = await web3.eth.getTransactionCount(secondPublicKey, "pending")
+
+
+                let txObject = {
+                    from: secondPublicKey,
+                    to: portalAddress,
+                    gasPrice: 25 * 1000000000,
+                    gasLimit: 1000000,
+                    chainId: 4,
+                    nonce: web3.utils.toHex(count),
+                    data: contract.methods.setXIOStakeQuantity(5000000000000000000000).encodeABI()
+                }
+
+                let signed = await web3.eth.accounts.signTransaction(txObject, secondPrivateKey)
+                try {
+                    let tx = await web3.eth.sendSignedTransaction(signed.rawTransaction)
+                        .on('error', (err) => {
+                            console.log(err)
+                        }).on('transactionHash', (hash) => {
+                            console.log(hash)
+                        }).on('confirmation', (confirmationNumber, receipt) => {
+                            if (confirmationNumber === 1) {
+                                console.log(receipt)
+                            }
+                        })
+
+                    expect(tx.status).to.equal(true)
+                } catch (e) {
+                    expect(false).to.equal(true)
+                }
+            });
+
+            it('Should not xio stake quantity because it is 0', async () => {
+                contract = new web3.eth.Contract(contants.ABI_PORTAL, portalAddress);
+                let count = await web3.eth.getTransactionCount(ownerPublicKey, "pending")
+
+
+                let txObject = {
+                    from: ownerPublicKey,
+                    to: portalAddress,
+                    gasPrice: 25 * 1000000000,
+                    gasLimit: 1000000,
+                    chainId: 4,
+                    nonce: web3.utils.toHex(count),
+                    data: contract.methods.setXIOStakeQuantity(0).encodeABI()
+                }
+
+                let signed = await web3.eth.accounts.signTransaction(txObject, ownerPrivateKey)
+                try {
+                    let tx = await web3.eth.sendSignedTransaction(signed.rawTransaction)
+                        .on('error', (err) => {
+                            console.log(err)
+                        }).on('transactionHash', (hash) => {
+                            console.log(hash)
+                        }).on('confirmation', (confirmationNumber, receipt) => {
+                            if (confirmationNumber === 1) {
+                                console.log(receipt)
+                            }
+                        })
+
+                    expect(tx.status).to.equal(true)
+                } catch (e) {
+                    expect(false).to.equal(true)
+                }
+            });
+        });
+
+        describe('Set Days Limit', async () => {
+            it('Should set days because it is set by owner', async () => {
+                contract = new web3.eth.Contract(contants.ABI_PORTAL, portalAddress);
+                let count = await web3.eth.getTransactionCount(ownerPublicKey, "pending")
+
+                let txObject = {
+                    from: ownerPublicKey,
+                    to: portalAddress,
+                    gasPrice: 25 * 1000000000,
+                    gasLimit: 1000000,
+                    chainId: 4,
+                    nonce: web3.utils.toHex(count),
+                    data: contract.methods.setDays(30).encodeABI()
+                }
+
+                let signed = await web3.eth.accounts.signTransaction(txObject, ownerPrivateKey)
+
+                let tx = await web3.eth.sendSignedTransaction(signed.rawTransaction)
+                    .on('error', (err) => {
+                        console.log(err)
+                    }).on('transactionHash', (hash) => {
+                        console.log(hash)
+                    }).on('confirmation', (confirmationNumber, receipt) => {
+                        if (confirmationNumber === 1) {
+                            console.log(receipt)
+                        }
+                    })
+
+                expect(tx.status).to.equal(true)
+            });
+
+            it('Days is equal to ', async () => {
+                contract = new web3.eth.Contract(contants.ABI_PORTAL, portalAddress);
+
+                let rate = await contract.methods.getDays().call()
+
+                expect(Number(rate)).to.equal(30)
+            });
+
+            it('Should not days because it is not set by owner', async () => {
+                contract = new web3.eth.Contract(contants.ABI_PORTAL, portalAddress);
+                let count = await web3.eth.getTransactionCount(secondPublicKey, "pending")
+
+
+                let txObject = {
+                    from: secondPublicKey,
+                    to: portalAddress,
+                    gasPrice: 25 * 1000000000,
+                    gasLimit: 1000000,
+                    chainId: 4,
+                    nonce: web3.utils.toHex(count),
+                    data: contract.methods.setDays(30).encodeABI()
+                }
+
+                let signed = await web3.eth.accounts.signTransaction(txObject, secondPrivateKey)
+                try {
+                    let tx = await web3.eth.sendSignedTransaction(signed.rawTransaction)
+                        .on('error', (err) => {
+                            console.log(err)
+                        }).on('transactionHash', (hash) => {
+                            console.log(hash)
+                        }).on('confirmation', (confirmationNumber, receipt) => {
+                            if (confirmationNumber === 1) {
+                                console.log(receipt)
+                            }
+                        })
+
+                    expect(tx.status).to.equal(true)
+                } catch (e) {
+                    expect(false).to.equal(true)
+                }
+            });
+
+            it('Should not set days because it is 0', async () => {
+                contract = new web3.eth.Contract(contants.ABI_PORTAL, portalAddress);
+                let count = await web3.eth.getTransactionCount(ownerPublicKey, "pending")
+
+
+                let txObject = {
+                    from: ownerPublicKey,
+                    to: portalAddress,
+                    gasPrice: 25 * 1000000000,
+                    gasLimit: 1000000,
+                    chainId: 4,
+                    nonce: web3.utils.toHex(count),
+                    data: contract.methods.setDays(0).encodeABI()
+                }
+
+                let signed = await web3.eth.accounts.signTransaction(txObject, ownerPrivateKey)
+                try {
+                    let tx = await web3.eth.sendSignedTransaction(signed.rawTransaction)
+                        .on('error', (err) => {
+                            console.log(err)
+                        }).on('transactionHash', (hash) => {
+                            console.log(hash)
+                        }).on('confirmation', (confirmationNumber, receipt) => {
+                            if (confirmationNumber === 1) {
+                                console.log(receipt)
+                            }
+                        })
+
+                    expect(tx.status).to.equal(true)
+                } catch (e) {
+                    expect(false).to.equal(true)
+                }
+            });
+        });
         //Add portal
         describe('Add Portal', async () => {
             it('Should Add Portal', async () => {
@@ -634,6 +850,8 @@ describe('Owner functions', async () => {
                 expect(tx.status).to.equal(true)
             });
         })
+
+        ;
     })
     describe("Public functions", async () => {
         describe('Get XIO To ETH', async () => {
@@ -1280,6 +1498,66 @@ describe('Owner functions', async () => {
         })
 
         describe('Executing functions after pausing', async () => {
+            it('Should not set xio stake quantity because contract is paused', async () => {
+                contract = new web3.eth.Contract(contants.ABI_PORTAL, portalAddress);
+                let count = await web3.eth.getTransactionCount(ownerPublicKey, "pending")
+
+                let txObject = {
+                    from: ownerPublicKey,
+                    to: portalAddress,
+                    gasPrice: 25 * 1000000000,
+                    gasLimit: 1000000,
+                    chainId: 4,
+                    nonce: web3.utils.toHex(count),
+                    data: contract.methods.setXIOStakeQuantity(5000000000000000000000).encodeABI()
+                }
+
+                let signed = await web3.eth.accounts.signTransaction(txObject, ownerPrivateKey)
+
+                let tx = await web3.eth.sendSignedTransaction(signed.rawTransaction)
+                    .on('error', (err) => {
+                        console.log(err)
+                    }).on('transactionHash', (hash) => {
+                        console.log(hash)
+                    }).on('confirmation', (confirmationNumber, receipt) => {
+                        if (confirmationNumber === 1) {
+                            console.log(receipt)
+                        }
+                    })
+
+                expect(tx.status).to.equal(true)
+            });
+
+            it('Should not set days because contract is paused', async () => {
+                contract = new web3.eth.Contract(contants.ABI_PORTAL, portalAddress);
+                let count = await web3.eth.getTransactionCount(ownerPublicKey, "pending")
+
+                let txObject = {
+                    from: ownerPublicKey,
+                    to: portalAddress,
+                    gasPrice: 25 * 1000000000,
+                    gasLimit: 1000000,
+                    chainId: 4,
+                    nonce: web3.utils.toHex(count),
+                    data: contract.methods.setDays(30).encodeABI()
+                }
+
+                let signed = await web3.eth.accounts.signTransaction(txObject, ownerPrivateKey)
+
+                let tx = await web3.eth.sendSignedTransaction(signed.rawTransaction)
+                    .on('error', (err) => {
+                        console.log(err)
+                    }).on('transactionHash', (hash) => {
+                        console.log(hash)
+                    }).on('confirmation', (confirmationNumber, receipt) => {
+                        if (confirmationNumber === 1) {
+                            console.log(receipt)
+                        }
+                    })
+
+                expect(tx.status).to.equal(true)
+            });
+
             it('Should not set interest rate because contract is paused', async () => {
                 contract = new web3.eth.Contract(contants.ABI_PORTAL, portalAddress);
                 let count = await web3.eth.getTransactionCount(ownerPublicKey, "pending")
@@ -1691,6 +1969,66 @@ describe('Owner functions', async () => {
         })
 
         describe('Executing functions after unpausing', async () => {
+            it('Should set xio stake quantity', async () => {
+                contract = new web3.eth.Contract(contants.ABI_PORTAL, portalAddress);
+                let count = await web3.eth.getTransactionCount(ownerPublicKey, "pending")
+
+                let txObject = {
+                    from: ownerPublicKey,
+                    to: portalAddress,
+                    gasPrice: 25 * 1000000000,
+                    gasLimit: 1000000,
+                    chainId: 4,
+                    nonce: web3.utils.toHex(count),
+                    data: contract.methods.setXIOStakeQuantity(5000000000000000000000).encodeABI()
+                }
+
+                let signed = await web3.eth.accounts.signTransaction(txObject, ownerPrivateKey)
+
+                let tx = await web3.eth.sendSignedTransaction(signed.rawTransaction)
+                    .on('error', (err) => {
+                        console.log(err)
+                    }).on('transactionHash', (hash) => {
+                        console.log(hash)
+                    }).on('confirmation', (confirmationNumber, receipt) => {
+                        if (confirmationNumber === 1) {
+                            console.log(receipt)
+                        }
+                    })
+
+                expect(tx.status).to.equal(true)
+            });
+
+            it('Should set days', async () => {
+                contract = new web3.eth.Contract(contants.ABI_PORTAL, portalAddress);
+                let count = await web3.eth.getTransactionCount(ownerPublicKey, "pending")
+
+                let txObject = {
+                    from: ownerPublicKey,
+                    to: portalAddress,
+                    gasPrice: 25 * 1000000000,
+                    gasLimit: 1000000,
+                    chainId: 4,
+                    nonce: web3.utils.toHex(count),
+                    data: contract.methods.setDays(30).encodeABI()
+                }
+
+                let signed = await web3.eth.accounts.signTransaction(txObject, ownerPrivateKey)
+
+                let tx = await web3.eth.sendSignedTransaction(signed.rawTransaction)
+                    .on('error', (err) => {
+                        console.log(err)
+                    }).on('transactionHash', (hash) => {
+                        console.log(hash)
+                    }).on('confirmation', (confirmationNumber, receipt) => {
+                        if (confirmationNumber === 1) {
+                            console.log(receipt)
+                        }
+                    })
+
+                expect(tx.status).to.equal(true)
+            });
+
             it('Should set interest rate', async () => {
                 contract = new web3.eth.Contract(contants.ABI_PORTAL, portalAddress);
                 let count = await web3.eth.getTransactionCount(ownerPublicKey, "pending")
